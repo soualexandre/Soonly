@@ -1,0 +1,20 @@
+{
+  "dependencies": {
+    "@fastify/cors": "^11.0.1",
+    "@fastify/jwt": "^9.1.0",
+    "@prisma/client": "^6.9.0",
+    "@types/node": "^22.15.29",
+    "dotenv": "^16.5.0",
+    "fastify": "^5.3.3",
+    "fastify-plugin": "^5.0.1"
+  },
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only config/server.ts"
+  },
+
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3"
+  }
+}
