@@ -1,25 +1,52 @@
+version: "3.8"
+
 services:
   soonly:
     container_name: soonly
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.backend
     extra_hosts:
       - host.docker.internal:host-gateway
     logging:
       driver: local
       options:
-        max-size: '10m'
-        max-file: '10'
+        max-size: "10m"
+        max-file: "10"
     restart: unless-stopped
     ports:
-      - 3053:3053  
+      - "3053:3053"
     volumes:
-      - ./code:/app
+      - ./backend:/app
     environment:
-      DB_URL: 'postgresql://postgres:postgres@host.docker.internal:5432/soonly_db?schema=public&connection_limit=5'
-      ENVIRONMENT: 'localhost'
-      NODE_ENV: 'development'
-      REDIS_HOST: 'redis'
-      REDIS_PASSWORD: Stefanini@10
-      REDIS_PORT: '6379'
+      DB_URL: postgresql://postgres:postgres@host.docker.internal:5432/soonly_db?schema=public&connection_limit=5
+      ENVIRONMENT: localhost
+      NODE_ENV: development
+      REDIS_HOST: redis
+      REDIS_PASSWORD: Soonly@10
+      REDIS_PORT: "6379"
+
+  soonly_frontend:
+    container_name: soonly_frontend
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    logging:
+      driver: local
+      options:
+        max-size: "10m"
+        max-file: "10"
+    restart: unless-stopped
+    ports:
+      - "3054:5173"
+    volumes:
+      - ./frontend/Soonly:/app
+    environment:
+      DB_URL: postgresql://postgres:postgres@host.docker.internal:5432/soonly_db?schema=public&connection_limit=5
+      ENVIRONMENT: localhost
+      NODE_ENV: development
+      REDIS_HOST: redis
+      REDIS_PASSWORD: Soonly@10
+      REDIS_PORT: "6379"
