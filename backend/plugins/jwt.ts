@@ -3,7 +3,10 @@ import jwt from '@fastify/jwt'
 
 export default fp(async (app) => {
   app.register(jwt, {
-    secret: process.env.JWT_SECRET || 'super-secret',
+    secret: process.env.JWT_SECRET || 'supersecret',
+    sign: {
+      expiresIn: '24h' 
+    }
   })
 
   app.decorate(
@@ -12,8 +15,9 @@ export default fp(async (app) => {
       try {
         await request.jwtVerify()
       } catch (err) {
-        reply.send(err)
+        reply.code(401).send({ error: 'Unauthorized' })
       }
     }
   )
 })
+
