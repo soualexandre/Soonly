@@ -20,22 +20,6 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
-model Movie {
-  id          String   @id @default(uuid())
-  title       String
-  releaseDate DateTime
-  externalId  Int
-  posterUrl   String?
-  overview    String?
-
-  reminders     Reminder[]
-  notifications Notification[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([externalId])
-}
 
 model Reminder {
   id      String @id @default(uuid())
@@ -43,7 +27,6 @@ model Reminder {
   movieId String
 
   user  User  @relation(fields: [userId], references: [id])
-  movie Movie @relation(fields: [movieId], references: [id])
 
   createdAt DateTime @default(now())
 
@@ -59,7 +42,6 @@ model Notification {
   sentAt  DateTime         @default(now())
 
   user  User   @relation(fields: [userId], references: [id])
-  movie Movie? @relation(fields: [movieId], references: [id])
 }
 
 enum NotificationType {

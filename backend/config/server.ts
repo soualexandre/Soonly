@@ -5,14 +5,16 @@ import { buildApp } from '../app'
 
 const PORT = Number(process.env.PORT) || 3000
 
-const app = buildApp()
+async function start() {
+  const app = await buildApp()
 
-app.listen({ port: PORT, host: '0.0.0.0' }) 
-  .then(async () => {
-    await app.ready()
+  try {
+    await app.listen({ port: PORT, host: '0.0.0.0' })
     console.log(`🚀 Server running on http://localhost:${PORT}`)
-  })
-  .catch((err) => {
+  } catch (err) {
     app.log.error(err)
     process.exit(1)
-  })
+  }
+}
+
+start()

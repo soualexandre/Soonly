@@ -1,4 +1,8 @@
 {
+  "include": [
+    "src/**/*",
+    "types/**/*"
+  ],
   "compilerOptions": {
     "target": "ES2020",
     "module": "NodeNext",
@@ -7,10 +11,16 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "strict": true,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types"
+    ],
     "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*",
+        "types*"
+      ]
     }
-  },
-  "include": ["src", "config"]
+  }
 }
