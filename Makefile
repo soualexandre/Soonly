@@ -1,4 +1,4 @@
-export COMPOSE_COMMAND        := docker-compose --project-name inlira
+export COMPOSE_COMMAND        := docker-compose --project-name soonly
 export COMPOSE_IGNORE_ORPHANS := true
 
 all: dev

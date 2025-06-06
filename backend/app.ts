@@ -7,6 +7,7 @@ import prisma from './plugins/prisma'
 import { authRoutes } from './routes/auth.routes'
 import { movieRoutes } from './routes/movie.routes'
 import { reminderRoutes } from './routes/reminder.routes'
+import fastifyMultipart from '@fastify/multipart'
 
 export const buildApp = () => {
   const app = Fastify({ logger: true })
@@ -14,6 +15,7 @@ export const buildApp = () => {
   app.register(cors)
   app.register(jwt)
   app.register(prisma)
+  app.register(fastifyMultipart)
 
   app.register(authRoutes, { prefix: '/auth' })
   app.register(movieRoutes, { prefix: '/movies' })
