@@ -1,0 +1,76 @@
+{
+  "app": {
+    "name": "Soonly",
+    "slogan": "Never miss a premiere"
+  },
+  "home": {
+    "featuredTitle": "Featured",
+    "upcomingTitle": "Coming Soon",
+    "remindMe": "Remind Me",
+    "reminderActive": "Reminder Active",
+    "details": "Details",
+    "addReminder": "Add Reminder",
+    "removeReminder": "Remove Reminder",
+    "releaseDate": "Premieres on {date}",
+    "daysToRelease": "{days} days to go",
+    "movieReminder": "Movie Reminder",
+    "featured": "Featured",
+    "favoriteMoveies": "Never miss the release of your favorite movies and series",
+    "upcomingMovies": "Keep track of upcoming movie and series releases",
+    "noUpcomingMovies": "No scheduled releases",
+    "noFeaturedMovies": "No featured content at the moment",
+    "loading": "Loading...",
+    "error": "Error loading data",
+    "upcomingReleases": "Upcoming Releases"
+  },
+  "reminder": {
+    "setSuccess": "Reminder set for {title}!",
+    "removeSuccess": "Reminder removed for {title}",
+    "setError": "Error setting reminder",
+    "removeError": "Error removing reminder",
+    "modalTitle": "Set Reminder",
+    "modalDescription": "We'll notify you when {title} premieres",
+    "notificationLabel": "Notify via:",
+    "notificationOptions": {
+      "email": "Email",
+      "push": "Push Notification",
+      "both": "Both"
+    },
+    "saveButton": "Save Reminder",
+    "cancelButton": "Cancel"
+  },
+  "ariaLabels": {
+    "toggleReminder": "Toggle reminder for {title}",
+    "mediaPoster": "Poster for {title}",
+    "featuredMediaBackdrop": "Backdrop image for {title}",
+    "detailsButton": "View details for {title}",
+    "closeModal": "Close modal"
+  },
+  "seo": {
+    "title": "Soonly - Track upcoming movies and shows",
+    "description": "Set reminders for upcoming movies and TV shows and never miss a premiere"
+  },
+  "emptyStates": {
+    "upcomingMedia": "No upcoming releases scheduled",
+    "featuredMedia": "No featured content at the moment"
+  },
+  "dateFormats": {
+    "short": "MM/dd/yyyy",
+    "long": "MMMM d, yyyy"
+  },
+  "login": {
+    "welcome": "Welcome back",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "signIn": "Sign In",
+    "signingIn": "Signing In...",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign Up",
+    "orContinueWith": "Or continue with",
+    "resetPassword": "Reset Password"
+  }
+}

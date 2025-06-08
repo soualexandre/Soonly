@@ -5,20 +5,15 @@ export class SqsHandlerService {
   constructor(private readonly notificationService: NotificationService) { }
 
   async handleMessage(body: any): Promise<void> {
-    console.log('📨 Processando mensagem:', body);
     try {
       const data = typeof body === 'string' ? JSON.parse(body) : body;
 
-      console.log('📨 Mensagem recebida:', data);
-
       switch (data.type) {
         case 'REMINDER_CREATED':
-          console.log('🎬 Enviando lembrete de filme:', data.payload.movieId);
-
           const createNotification = await this.notificationService.createNotification({
             movieId: data.payload.movieId,
             userId: data.payload.userId,
-            message: `Lembrete: O filme ${data.payload.movieId} está disponível!`,
+            message: data.payload.message || 'Você tem um lembrete!',
             sentAt: new Date(),
             type: Object.values(NotificationType).includes(data.payload.type)
               ? data.payload.type

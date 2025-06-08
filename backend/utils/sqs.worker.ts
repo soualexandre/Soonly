@@ -7,12 +7,9 @@ const consumer = new SQSConsumer(client, process.env.SQS_QUEUE_URL!);
 async function handleMessage(data: any) {
   try {
     const parsed = JSON.parse(data.Body);
-    console.log("📨 Mensagem recebida:", parsed);
-
     switch (parsed.type) {
       case "REMINDER_CREATED":
         console.log("🎬 Enviando lembrete de filme:", parsed.payload.movieId);
-        // Aqui você pode chamar um serviço de notificação, email, etc.
         break;
 
       default:

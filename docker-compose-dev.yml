@@ -44,7 +44,7 @@ services:
     ports:
       - "3054:5173"
     volumes:
-      - ./frontend/Soonly:/app
+      - ./Soonly:/app
     environment:
       DB_URL: postgresql://postgres:postgres@host.docker.internal:5432/soonly_db?schema=public&connection_limit=5
       ENVIRONMENT: localhost

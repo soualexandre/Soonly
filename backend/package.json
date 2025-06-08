@@ -7,6 +7,7 @@
     "@fastify/swagger": "^9.5.1",
     "@fastify/swagger-ui": "^5.2.3",
     "@prisma/client": "^6.9.0",
+    "@sinclair/typebox": "^0.34.33",
     "@types/axios": "^0.14.4",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^22.15.29",

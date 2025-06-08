@@ -36,4 +36,12 @@ export class RemindersRepository {
             }
         });
     }
+    async findByMovieIdAndUserId(movieId: string, userId: string) {
+        return prisma.reminder.findFirst({
+            where: {
+                movieId: movieId,
+                userId: userId,
+            }
+        });
+    }
 }

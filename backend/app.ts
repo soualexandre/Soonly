@@ -25,6 +25,6 @@ export const buildApp = async () => {
   app.register(authRoutes, { prefix: '/auth' })
   app.register(movieRoutes, { prefix: '/movies' })
   app.register(reminderRoutes, { prefix: '/reminders' })
- 
+  
   return app
 }

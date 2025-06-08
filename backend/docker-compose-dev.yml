@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  soonly-backend:
+    container_name: soonly-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    logging:
+      driver: local
+      options:
+        max-size: "10m"
+        max-file: "10"
+    restart: unless-stopped
+    ports:
+      - "3053:3053"
+    volumes:
+      - ./:/app
+    environment:
+      DB_URL: postgresql://postgres:postgres@host.docker.internal:5432/soonly_db?schema=public&connection_limit=5
+      ENVIRONMENT: localhost
+      NODE_ENV: development
+      REDIS_HOST: redis
+      REDIS_PASSWORD: Stefanini@10
+      REDIS_PORT: 6379
+    networks:
+      inlira_default: {}
+
+networks:
+  inlira_default:
+    external:
+      name: inlira_default

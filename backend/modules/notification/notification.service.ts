@@ -11,4 +11,12 @@ export class NotificationService {
         }
         return notification;
     }
+    async findAllNotifications() {
+        const notifications = await notificationRepository.findAll();
+        if (!notifications) {
+            throw new Error('Failed to fetch notifications');
+        }
+        return notifications;
+    }
+    
 }

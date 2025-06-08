@@ -1,29 +1,61 @@
 import { FastifyInstance } from 'fastify'
 import { ReminderService } from '../modules/reminders/reminders.service'
+import {
+  ReminderArray,
+  CreateReminderBody,
+  UserIdParams,
+  IdParams,
+  Reminder
+} from '../utils/schemas/reminder.schema'
+
 const remindersService = new ReminderService()
 
 export async function reminderRoutes(app: FastifyInstance) {
-  app.get('/', async (request, reply) => {
-    const reminders = await this.remindersService.list()
+  app.get('/', {
+    schema: {
+      description: 'Lista todos os reminders',
+      response: {
+        200: ReminderArray
+      }
+    }
+  }, async (request, reply) => {
+    const reminders = await remindersService.list()
     if (!reminders) {
       return reply.status(500).send({ error: 'Failed to fetch reminders' })
     }
     return reminders
   })
-  app.post('/', async (request, reply) => {
-    const { movieId, userId } = request.body as { movieId: string; userId: string }
+  
+  app.post('/', {
+    schema: {
+      description: 'Cria um novo reminder',
+      body: CreateReminderBody,
+      response: {
+        201: Reminder
+      }
+    }
+  }, async (request, reply) => {
+    const { movieId, userId, type, sendAt, message } = request.body as any
     if (!movieId || !userId) {
       return reply.status(400).send({ error: 'movieId and userId are required' })
     }
-    const reminder = await remindersService.create({ movieId, userId })
+    const reminder = await remindersService.create({ movieId, userId, type, sendAt, message })
     if (!reminder) {
       return reply.status(500).send({ error: 'Failed to create reminder' })
     }
     return reply.status(201).send(reminder)
   })
 
-  app.get('/user/:userId', async (request, reply) => {
-    const { userId } = request.params as { userId: string }
+  app.get('/user/:userId', {
+    schema: {
+      description: 'Busca reminders de um usuário',
+      params: UserIdParams,
+      response: {
+        200: ReminderArray
+      }
+    }
+  }, async (request, reply) => {
+    const { userId } = request.params as any
     if (!userId) {
       return reply.status(400).send({ error: 'User ID is required' })
     }
@@ -33,8 +65,17 @@ export async function reminderRoutes(app: FastifyInstance) {
     }
     return reminders
   })
-  app.delete('/:id', async (request, reply) => {
-    const { id } = request.params as { id: string }
+
+  app.delete('/:id', {
+    schema: {
+      description: 'Deleta um reminder pelo ID',
+      params: IdParams,
+      response: {
+        204: { type: 'null' }
+      }
+    }
+  }, async (request, reply) => {
+    const { id } = request.params as any
     if (!id) {
       return reply.status(400).send({ error: 'Reminder ID is required' })
     }
@@ -44,8 +85,23 @@ export async function reminderRoutes(app: FastifyInstance) {
     }
     return reply.status(204).send()
   })
-  app.get('/:id', async (request, reply) => {
-    const { id } = request.params as { id: string }
+
+  app.get('/:id', {
+    schema: {
+      description: 'Busca reminder por ID',
+      params: IdParams,
+      response: {
+        200: Reminder,
+        404: {
+          type: 'object',
+          properties: {
+            error: { type: 'string' }
+          }
+        }
+      }
+    }
+  }, async (request, reply) => {
+    const { id } = request.params as any
     if (!id) {
       return reply.status(400).send({ error: 'Reminder ID is required' })
     }
@@ -55,6 +111,7 @@ export async function reminderRoutes(app: FastifyInstance) {
     }
     return reminder
   })
+
   app.setErrorHandler((error, request, reply) => {
     console.error(error)
     reply.status(500).send({ error: 'Internal Server Error' })

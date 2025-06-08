@@ -1,0 +1,76 @@
+{
+  "app": {
+    "name": "Soonly",
+    "slogan": "Nunca mais perca uma estreia"
+  },
+  "home": {
+    "featuredTitle": "Em Destaque",
+    "upcomingTitle": "Próximas Estreias",
+    "remindMe": "Me Lembre",
+    "reminderActive": "Lembrete Ativo",
+    "details": "Detalhes",
+    "addReminder": "Adicionar Lembrete",
+    "removeReminder": "Remover Lembrete",
+    "releaseDate": "Estreia em {date}",
+    "daysToRelease": "Faltam {days} dias",
+    "movieReminder": "Lembrete de Filme",
+    "featured": "Em Destaque",
+    "favoriteMoveies": "Nunca mais perca o lançamento dos seus filmes e séries favoritos",
+    "upcomingMovies": "Acompanhe os próximos lançamentos de filmes e séries",
+    "noUpcomingMovies": "Nenhum lançamento agendado",
+    "noFeaturedMovies": "Nenhum conteúdo em destaque no momento",
+    "loading": "Carregando...",
+    "error": "Erro ao carregar os dados",
+    "upcomingReleases": "Próximas Estreias"
+  },
+  "reminder": {
+    "setSuccess": "Lembrete definido para {title}!",
+    "removeSuccess": "Lembrete removido para {title}",
+    "setError": "Erro ao definir lembrete",
+    "removeError": "Erro ao remover lembrete",
+    "modalTitle": "Definir Lembrete",
+    "modalDescription": "Te avisaremos quando {title} estrear",
+    "notificationLabel": "Notificar por:",
+    "notificationOptions": {
+      "email": "E-mail",
+      "push": "Notificação Push",
+      "both": "Ambos"
+    },
+    "saveButton": "Salvar Lembrete",
+    "cancelButton": "Cancelar"
+  },
+  "ariaLabels": {
+    "toggleReminder": "Alternar lembrete para {title}",
+    "mediaPoster": "Poster de {title}",
+    "featuredMediaBackdrop": "Imagem de fundo de {title}",
+    "detailsButton": "Ver detalhes de {title}",
+    "closeModal": "Fechar modal"
+  },
+  "seo": {
+    "title": "Soonly - Acompanhe filmes e séries que estão por vir",
+    "description": "Marque lembretes para filmes e séries que estão por vir e nunca perca uma estreia"
+  },
+  "emptyStates": {
+    "upcomingMedia": "Nenhuma estreia programada em breve",
+    "featuredMedia": "Nenhum destaque no momento"
+  },
+  "dateFormats": {
+    "short": "dd/MM/yyyy",
+    "long": "d 'de' MMMM 'de' yyyy"
+  },
+    "login": {
+    "welcome": "Bem-vindo de volta",
+    "email": "Email",
+    "emailPlaceholder": "Digite seu email",
+    "password": "Senha",
+    "passwordPlaceholder": "Digite sua senha",
+    "rememberMe": "Lembrar de mim",
+    "forgotPassword": "Esqueceu a senha?",
+    "signIn": "Entrar",
+    "signingIn": "Entrando...",
+    "noAccount": "Não tem uma conta?",
+    "signUp": "Cadastre-se",
+    "orContinueWith": "Ou continue com",
+    "resetPassword": "Redefinir Senha"
+  }
+}

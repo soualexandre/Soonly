@@ -14,16 +14,16 @@ export class ReminderService {
     }
 
     async create(data: { movieId: string; userId: string, type: NotificationType, sendAt?: Date, message?: string }) {
-        if (!data.movieId || !data.userId || !data.type || !data.sendAt) {
-            throw new Error('Movie ID and User ID are required')
-        }
         const isUserExists = await this.userRepository.findById(data.userId)
         if (!isUserExists) {
             throw new Error('User does not exist')
         }
-
+        const isReminderExists = await this.remindersRepository.findByMovieIdAndUserId(data.movieId, data.userId)
+        if (isReminderExists) {
+            throw new Error('Reminder already exists for this movie and user')
+        }
         const publisher = new SQSPublisher(sqsClient);
-        const sqsReminder = await publisher.send(process.env.SQS_QUEUE_URL!, {
+        await publisher.send(process.env.SQS_QUEUE_URL!, {
             type: "REMINDER_CREATED",
             payload: {
                 userId: data.userId,
@@ -34,7 +34,7 @@ export class ReminderService {
             },
         });
 
-        const created = await this.remindersRepository.create(data)
+        const created = await this.remindersRepository.create({movieId: data.movieId, userId: data.userId})
         if (!created) throw new Error('Failed to create movie reminder')
         return true
     }
@@ -60,6 +60,15 @@ export class ReminderService {
         }
         const reminder = await this.remindersRepository.findById(id)
         if (!reminder) throw new Error('Reminder not found')
+        return reminder
+    }
+
+    async findByMovieIdAndUserId(movieId: string, userId: string) {
+        if (!movieId || !userId) {
+            throw new Error('Movie ID and User ID are required')
+        }
+        const reminder = await this.remindersRepository.findByMovieIdAndUserId(movieId, userId)
+        if (!reminder) throw new Error('Reminder not found for movie and user')
         return reminder
     }
 
