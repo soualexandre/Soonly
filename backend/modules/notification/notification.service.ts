@@ -1,12 +1,10 @@
 import { NotificationType } from "@prisma/client";
-import { ReminderService } from "../reminders/reminders.service";
 import { NotificationRepository } from "./notification.repository";
 import { NotificationData } from "./type/notification.type";
 
 export class NotificationService {
     constructor(
         private notificationRepository: NotificationRepository,
-        private reminderService: ReminderService
     ) { }
 
     async createNotification(data: { movieId: string; userId: string, message: string, sentAt: Date, type: NotificationType }): Promise<NotificationData> {
@@ -17,6 +15,12 @@ export class NotificationService {
 
     async findAllNotifications() {
         const notifications = await this.notificationRepository.findAll();
+        if (!notifications) throw new Error('Failed to fetch notifications');
+        return notifications;
+    }
+
+      async deleteByUserAndNotification(userId: string, movieId:string) {
+        const notifications = await this.notificationRepository.deleteManyByUserAndMovie(userId, movieId);
         if (!notifications) throw new Error('Failed to fetch notifications');
         return notifications;
     }

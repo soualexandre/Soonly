@@ -10,7 +10,7 @@ const notificationRepository = new NotificationRepository()
 
 const reminderService = new ReminderService(remindersRepository, userRepository)
 
-const notificationService = new NotificationService(notificationRepository, reminderService)
+const notificationService = new NotificationService(notificationRepository)
 
 
 export class SqsHandlerService {

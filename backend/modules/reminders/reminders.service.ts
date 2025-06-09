@@ -107,4 +107,9 @@ export class ReminderService {
 
         return reminder;
     }
+
+    async deleteByUserAndMovie(userid: string, movieId: string) {
+        const reminder = this.remindersRepository.deleteByUserAndMovie(userid, movieId);
+            if(!reminder) throw new Error('Reminder not found for movie and user');
+    }
 }

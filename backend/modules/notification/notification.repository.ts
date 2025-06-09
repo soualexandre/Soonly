@@ -70,5 +70,12 @@ export class NotificationRepository {
             data: { type: "SYSTEM" }
         });
     }
-
+    async deleteManyByUserAndMovie(userId: string, movieId: string) {
+        return prisma.notification.deleteMany({
+            where: {
+                userId,
+                movieId
+            }
+        })
+    }
 }

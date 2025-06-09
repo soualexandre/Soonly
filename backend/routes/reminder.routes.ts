@@ -11,11 +11,16 @@ import {
 import { RemindersRepository } from '../modules/reminders/reminders.repository'
 import { UserRepository } from '../modules/auth/auth.repository'
 import { Type } from '@sinclair/typebox'
+import { NotificationService } from '../modules/notification/notification.service'
+import { NotificationRepository } from '../modules/notification/notification.repository'
 
 const remindersRepository = new RemindersRepository()
 const userRepository = new UserRepository()
+const notificationRepository = new NotificationRepository();
 
 const remindersService = new ReminderService(remindersRepository, userRepository)
+const notificationService = new NotificationService(notificationRepository);
+
 export async function reminderRoutes(app: FastifyInstance) {
   app.get('/', {
     schema: {
@@ -142,6 +147,53 @@ export async function reminderRoutes(app: FastifyInstance) {
       reminders: userData.reminders,
     }
   })
+
+  app.delete('/:userId/:movieId', {
+    schema: {
+      description: 'Deleta reminders e notifications por userId e movieId',
+      params: {
+        type: 'object',
+        properties: {
+          userId: { type: 'string' },
+          movieId: { type: 'string' }
+        },
+        required: ['userId', 'movieId']
+      },
+      response: {
+        204: { type: 'null' },
+        400: {
+          type: 'object',
+          properties: {
+            error: { type: 'string' }
+          }
+        },
+        500: {
+          type: 'object',
+          properties: {
+            error: { type: 'string' }
+          }
+        }
+      }
+    }
+  }, async (request, reply) => {
+    const { userId, movieId } = request.params as { userId: string; movieId: string }
+
+    if (!userId || !movieId) {
+      return reply.status(400).send({ error: 'userId e movieId são obrigatórios' })
+    }
+
+    try {
+      await notificationService.deleteByUserAndNotification(userId, movieId)
+
+      await remindersService.deleteByUserAndMovie(userId, movieId)
+
+      return reply.status(204).send()
+    } catch (error) {
+      request.log.error(error)
+      return reply.status(500).send({ error: 'Erro ao deletar lembrete e notificações' })
+    }
+  })
+
 
   app.setErrorHandler((error, request, reply) => {
     console.error(error)

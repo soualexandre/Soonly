@@ -79,4 +79,14 @@ export class RemindersRepository {
             }
         });
     }
+
+    async deleteByUserAndMovie(userId: string, movieId: string) {
+        return prisma.reminder.deleteMany({
+            where: {
+                userId,
+                movieId
+            }
+        })
+    }
+
 }

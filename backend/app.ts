@@ -24,7 +24,8 @@ export const buildApp = async () => {
   app.register(fastifySocketIO, {
     cors: {
       origin: "http://localhost:3053",
-      methods: ["GET", "POST"]
+      methods: ['GET', 'POST', 'DELETE', 'PUT', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
     }
   });
 

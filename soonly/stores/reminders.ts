@@ -32,5 +32,18 @@ export const useReminderStore = defineStore('reminder', {
                 this.loading = false
             }
         },
+        async removeReminder(userId: string | null, movieId: string) {
+            try {
+                const res = await api.delete(`/reminders/${userId}/${movieId}`)
+
+                if (res.status !== 204) {
+                    throw new Error('Erro ao remover lembrete')
+                }
+
+                this.reminders = this.reminders.filter(r => r.movieId !== movieId || r.userId !== userId)
+            } catch (err) {
+                console.error('Erro ao remover lembrete:', err)
+            }
+        }
     },
 })

@@ -1,16 +1,12 @@
 import fp from "fastify-plugin";
 import { sqsClient } from "../config/sqs.config";
 import { SQSConsumer } from "../external/sqs.consumer.external";
-import { NotificationService } from "../modules/notification/notification.service";
 import { SqsHandlerService } from "../utils/sqs.hundler";
-import { ReminderService } from "../modules/reminders/reminders.service";
 export default fp(async (fastify, opts) => {
   const client = sqsClient;
   const queueUrl = process.env.SQS_QUEUE_URL!;
   const consumer = new SQSConsumer(client, queueUrl);
-  const notificationService = new NotificationService();
-  const reminderService = new ReminderService();
-  const handler = new SqsHandlerService(notificationService, reminderService);
+  const handler = new SqsHandlerService();
 
   fastify.decorate("sqs", sqsClient);
 
