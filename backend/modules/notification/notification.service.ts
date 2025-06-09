@@ -1,32 +1,23 @@
 import { NotificationType } from "@prisma/client";
 import { NotificationRepository } from "./notification.repository";
 import { ReminderService } from "../reminders/reminders.service";
-
-const notificationRepository = new NotificationRepository();
-const reminderService = new ReminderService();
+import { NotificationData } from "./type/notification.type"
 
 export class NotificationService {
-    async createNotification(data: { movieId: string; userId: string, message: string, sentAt: Date, type: NotificationType }) {
-        try {
+    constructor(
+        private notificationRepository: NotificationRepository,
+        private reminderService: ReminderService
+    ) { }
 
-            const notification = await notificationRepository.create(data);
-
-            if (!notification) {
-                throw new Error('Failed to create notification');
-            }
-
-            return notification;
-        } catch (error) {
-            console.error('Error creating notification:', error);
-            throw error;
-        }
+    async createNotification(data: { movieId: string; userId: string, message: string, sentAt: Date, type: NotificationType }): Promise<NotificationData> {
+        const notification = await this.notificationRepository.create(data);
+        if (!notification) throw new Error('Failed to create notification');
+        return notification;
     }
+
     async findAllNotifications() {
-        const notifications = await notificationRepository.findAll();
-        if (!notifications) {
-            throw new Error('Failed to fetch notifications');
-        }
+        const notifications = await this.notificationRepository.findAll();
+        if (!notifications) throw new Error('Failed to fetch notifications');
         return notifications;
     }
-
 }

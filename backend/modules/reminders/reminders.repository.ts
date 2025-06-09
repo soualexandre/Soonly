@@ -1,9 +1,10 @@
 import { PrismaClient } from '@prisma/client';
+import { ReminderData } from './type/reminder.type';
 
 const prisma = new PrismaClient()
 
 export class RemindersRepository {
-    async findAll() {
+    async findAll(): Promise<ReminderData[] | null> {
         return prisma.reminder.findMany();
     }
 
@@ -22,13 +23,15 @@ export class RemindersRepository {
             }
         });
     }
-    async deleteById(id: string) {
+    async deleteById(id: string): Promise<ReminderData> {
         return prisma.reminder.delete({
             where: {
                 id: id,
             }
         });
+
     }
+
     async findById(id: string) {
         return prisma.reminder.findUnique({
             where: {

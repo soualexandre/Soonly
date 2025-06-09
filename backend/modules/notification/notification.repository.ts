@@ -1,13 +1,15 @@
 import { NotificationType, PrismaClient } from '@prisma/client';
+import { NotificationData } from './type/notification.type';
+import { promises } from 'dns';
 
 const prisma = new PrismaClient()
 
 export class NotificationRepository {
-    async findAll() {
+    findAll(): Promise<NotificationData[] | null> {
         return prisma.notification.findMany();
     }
 
-    async create(data: { movieId: string; userId: string; message: string; sentAt: Date; type: NotificationType }) {
+    async create(data: { movieId: string; userId: string; message: string; sentAt: Date; type: NotificationType }): Promise<NotificationData | null> {
         const existing = await prisma.notification.findFirst({
             where: {
                 movieId: data.movieId,

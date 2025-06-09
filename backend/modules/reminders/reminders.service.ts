@@ -3,11 +3,12 @@ import { sqsClient } from '../../config/sqs.config'
 import { SQSPublisher } from '../../external/sqs.publisher.external'
 import { UserRepository } from '../auth/auth.repository'
 import { RemindersRepository } from './reminders.repository'
-import { WebSocketService } from '../websocket/websocket.service'
 
 export class ReminderService {
-    private userRepository = new UserRepository()
-    private remindersRepository = new RemindersRepository()
+    constructor(
+        private readonly remindersRepository: RemindersRepository,
+        private readonly userRepository: UserRepository
+    ) { }
 
     async list() {
         const list = await this.remindersRepository.findAll()
@@ -28,8 +29,8 @@ export class ReminderService {
         if (!reminder) {
             return { success: false }
         }
-   
-        
+
+
         return { success: true }
     }
 
@@ -64,13 +65,13 @@ export class ReminderService {
         if (!reminders) throw new Error('Failed to fetch reminders for user')
         return reminders
     }
-    async deleteById(id: string) {
-        if (!id) {
-            throw new Error('Reminder ID is required')
+    async deleteById(id: string): Promise<boolean> {
+        try {
+            const deleted = await this.remindersRepository.deleteById(id)
+            return !!deleted
+        } catch (error) {
+            throw new Error('Failed to delete reminder')
         }
-        const deleted = await this.remindersRepository.deleteById(id)
-        if (!deleted) throw new Error('Failed to delete reminder')
-        return deleted
     }
     async findById(id: string) {
         if (!id) {
