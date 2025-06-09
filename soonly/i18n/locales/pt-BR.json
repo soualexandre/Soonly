@@ -76,5 +76,8 @@
   "auth":{
     "login": "Entrar",
     "logout": "Sair"
+  },
+  "menu": {
+    "reminders": "Meus Lembretes"
   }
 }

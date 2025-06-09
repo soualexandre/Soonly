@@ -28,6 +28,27 @@ export const IdParams = Type.Object({
   id: Type.String({ format: 'uuid' }),
 })
 
+const Notification = Type.Object({
+  id: Type.String({ format: 'uuid' }),
+  userId: Type.String({ format: 'uuid' }),
+  type: Type.String(),
+  message: Type.String(),
+  sentAt: Type.String({ format: 'date-time' }),
+  movieId: Type.String(),
+})
+
+const ReminderWithNotifications = Type.Object({
+  userId: Type.String({ format: 'uuid' }),
+  movieId: Type.String(),
+  createdAt: Type.String({ format: 'date-time' }),
+  notifications: Type.Array(Notification),
+})
+
+export const UserReminderNotificationResponse = Type.Object({
+  reminders: Type.Array(ReminderWithNotifications),
+})
+
+
 export type ReminderType = Static<typeof Reminder>
 export type ReminderArrayType = Static<typeof ReminderArray>
 export type CreateReminderBodyType = Static<typeof CreateReminderBody>

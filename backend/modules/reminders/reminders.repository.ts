@@ -8,6 +8,38 @@ export class RemindersRepository {
         return prisma.reminder.findMany();
     }
 
+    async getUserRemindersAndNotifications(userId: string) {
+        const userData = await prisma.user.findUnique({
+            where: { id: userId },
+            include: {
+                reminders: true,
+                notifications: true,
+            },
+        });
+
+        if (!userData) return null;
+
+        const { reminders, notifications } = userData;
+
+        const notificationsMap = notifications.reduce((map, notification) => {
+            if (!map[notification.movieId]) {
+                map[notification.movieId] = [];
+            }
+            map[notification.movieId].push(notification);
+            return map;
+        }, {} as Record<string, typeof notifications>);
+
+        const mergedReminders = reminders.map(reminder => ({
+            ...reminder,
+            notifications: notificationsMap[reminder.movieId] || [],
+        }));
+
+        return {
+            reminders: mergedReminders,
+        };
+    }
+
+
     async create(data: { movieId: string; userId: string }) {
         return prisma.reminder.create({
             data: {

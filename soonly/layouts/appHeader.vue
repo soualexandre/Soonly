@@ -1,11 +1,14 @@
 <template>
     <header class="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-md shadow-md">
         <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <h1 class="text-xl font-semibold tracking-wider text-white drop-shadow">
+            <h1 @click="goToHome"class="text-xl font-semibold tracking-wider text-white drop-shadow">
                 {{ $t('app.name') }}
             </h1>
 
-            <div class="flex items-center gap-6">
+            <div class="flex items-center gap-6" >
+                <button @click="goToReminders" v-if="isAuthenticated && userDataLoaded" class="hover:text-red-500 transition-colors font-medium">
+                    {{ $t('menu.reminders') }}
+                </button>
                 <div class="relative w-48">
                     <div class="absolute inset-y-0 left-3 flex items-center text-lg">🌐</div>
                     <select v-model="$i18n.locale"
@@ -21,13 +24,14 @@
                         class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-lg focus:outline-none focus:ring-2 focus:ring-red-600/80"
                         aria-haspopup="true" :aria-expanded="dropdownOpen">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                clip-rule="evenodd" />
                         </svg>
                     </button>
 
                     <div v-show="dropdownOpen"
                         class="absolute right-0 mt-2 w-56 bg-black/90 border border-gray-700 rounded-md shadow-lg py-3 z-50 flex flex-col transition-opacity duration-200"
-                        :class="{'opacity-100': dropdownOpen, 'opacity-0': !dropdownOpen}">
+                        :class="{ 'opacity-100': dropdownOpen, 'opacity-0': !dropdownOpen }">
                         <div class="px-4 py-2">
                             <div class="font-semibold truncate text-white" :title="userData.name">
                                 {{ userData.name }}
@@ -88,6 +92,12 @@ const userData = ref({
 })
 const userDataLoaded = ref(false)
 
+const goToReminders = () => {
+    router.push('/reminder')
+}
+const goToHome = () => {
+    router.push('/')
+}
 const loadUserData = () => {
     if (typeof window !== 'undefined') {
         userData.value = {
@@ -130,6 +140,6 @@ const handleLogout = () => {
 
 <style scoped>
 .transition-opacity {
-  transition: opacity 0.2s ease;
+    transition: opacity 0.2s ease;
 }
 </style>

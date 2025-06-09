@@ -96,4 +96,15 @@ export class ReminderService {
         if (!reminder) throw new Error('Reminder not found for movie and user')
         return reminder
     }
+
+    async getUserRemindersAndNotifications(userId: string) {
+        if (!userId) {
+            throw new Error('Movie ID and User ID are required')
+        }
+
+        const reminder = await this.remindersRepository.getUserRemindersAndNotifications(userId);
+        if (!reminder) throw new Error('Reminder not found for movie and user')
+
+        return reminder;
+    }
 }

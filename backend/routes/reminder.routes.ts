@@ -5,10 +5,12 @@ import {
   CreateReminderBody,
   UserIdParams,
   IdParams,
-  Reminder
+  Reminder,
+  UserReminderNotificationResponse
 } from '../utils/schemas/reminder.schema'
 import { RemindersRepository } from '../modules/reminders/reminders.repository'
 import { UserRepository } from '../modules/auth/auth.repository'
+import { Type } from '@sinclair/typebox'
 
 const remindersRepository = new RemindersRepository()
 const userRepository = new UserRepository()
@@ -29,7 +31,7 @@ export async function reminderRoutes(app: FastifyInstance) {
     }
     return reminders
   })
-  
+
   app.post('/', {
     schema: {
       description: 'Cria um novo reminder',
@@ -40,9 +42,9 @@ export async function reminderRoutes(app: FastifyInstance) {
     }
   }, async (request, reply) => {
     const { movieId, userId, type, sendAt, message } = request.body as any
- 
+
     const reminder = await remindersService.createQueue({ movieId, userId, type, sendAt, message })
-  
+
     return reminder;
   })
 
@@ -110,6 +112,35 @@ export async function reminderRoutes(app: FastifyInstance) {
       return reply.status(404).send({ error: 'Reminder not found' })
     }
     return reminder
+  })
+
+  app.get('/user/:userId/reminders-notifications', {
+    schema: {
+      description: 'Retorna todos os reminders e notificações de um usuário',
+      params: UserIdParams,
+      response: {
+        200: UserReminderNotificationResponse,
+        404: Type.Object({
+          error: Type.String(),
+        }),
+      },
+    },
+  }, async (request, reply) => {
+    const { userId } = request.params as { userId: string }
+
+    if (!userId) {
+      return reply.status(400).send({ error: 'User ID is required' })
+    }
+
+    const userData = await remindersService.getUserRemindersAndNotifications(userId);
+
+    if (!userData) {
+      return reply.status(404).send({ error: 'User not found' })
+    }
+
+    return {
+      reminders: userData.reminders,
+    }
   })
 
   app.setErrorHandler((error, request, reply) => {
