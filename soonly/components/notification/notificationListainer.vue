@@ -1,57 +1,47 @@
 <script setup lang="ts">
-import { io, type Socket } from "socket.io-client";
-// import { useToast } from "vue-toastification";
-import { onMounted, onUnmounted } from "vue";
-import { useAuthStore } from "~/stores/auth";
+import { ref, onMounted } from 'vue'
+import { useSocket } from '~/composables/webSocket'
 
-const toast = useToast();
-const authStore = useAuthStore();
-const config = useRuntimeConfig();
-const socket = ref<Socket | null>(null);
+const { connect, notifications } = useSocket()
 
 onMounted(() => {
-  if (!authStore.isAuthenticated) return;
+  connect()
+})
 
-  socket.value = io(config.public.socketBaseUrl, {
-    auth: {
-      token: authStore.token
-    },
-    transports: ["websocket"],
-    reconnection: true,
-    reconnectionAttempts: 5,
-    reconnectionDelay: 3000
-  });
-
-  socket.value.on("connect", () => {
-    console.log("Conectado ao serviço de notificações");
-  });
-
-  socket.value.on("connect_error", (err) => {
-    console.error("Erro na conexão:", err.message);
-  });
-
-//   socket.value.on("notification", (data: any) => {
-//     toast.info(data.message, {
-//       timeout: 5000,
-//       closeOnClick: true,
-//       pauseOnFocusLoss: true,
-//       icon: "🎬",
-//       onClick: () => handleNotificationClick(data)
-//     });
-//   });
-});
-
-onUnmounted(() => {
-  if (socket.value) {
-    socket.value.disconnect();
-  }
-});
-
-function handleNotificationClick(notification: any) {
-  navigateTo(`/movie/${notification.movieId}`);
+function closeNotification(id: string | number) {
+  const index = notifications.value.findIndex(n => n.id === id)
+  if (index !== -1) notifications.value.splice(index, 1)
 }
 </script>
 
 <template>
-  <div v-show="false"></div>
+  <div v-if="notifications.length > 0"
+    class="fixed top-4 right-4 w-80 max-h-[80vh] overflow-y-auto space-y-2 z-50">
+    <div v-for="notification in notifications" :key="notification.id"
+      class="bg-blue-600 text-white p-4 rounded shadow-md animate-fade-in relative">
+      <button @click="closeNotification(notification.id)" class="absolute top-1 right-2 text-white hover:text-gray-300"
+        aria-label="Fechar notificação">
+        &times;
+      </button>
+      <h3 class="font-bold">Nova Notificação</h3>
+      <p>{{ notification.message }}</p>
+      <small class="opacity-70">Filme ID: {{ notification.movieId }}</small>
+    </div>
+  </div>
 </template>
+
+<style scoped>
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in {
+  animation: fade-in 0.3s ease forwards;
+}
+</style>

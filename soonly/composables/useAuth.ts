@@ -2,13 +2,15 @@ import { ref, onMounted } from 'vue'
 
 export function useAuth() {
   const isAuthenticated = ref(false)
-  
+  const token = ref('')
+
   const checkAuth = () => {
     if (typeof window !== 'undefined') {
       isAuthenticated.value = !!localStorage.getItem('token')
+      token.value = localStorage.getItem('token') ?? ''
     }
   }
-  
+
   onMounted(() => {
     checkAuth()
   })
@@ -23,8 +25,9 @@ export function useAuth() {
   }
 
   return {
+    token,
     isAuthenticated,
     logout,
-    checkAuth 
+    checkAuth
   }
 }

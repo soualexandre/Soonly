@@ -17,6 +17,8 @@ export class NotificationJob {
 
     private setupCronJob() {
         const job = new CronJob("*/10 * * * * *", async () => {
+            console.log("Cron rodando");
+
             await this.processNotifications();
         });
 
@@ -27,7 +29,11 @@ export class NotificationJob {
         try {
             const now = new Date();
             const pendingNotifications = await notificationRepository.findPendingNotifications(now);
-
+            console.log("pending", pendingNotifications);
+            if (pendingNotifications.length <= 0) {
+                this.fastify.log.info('Menos de 1 notificações pendentes. Nada será enviado.');
+                return;
+            }
             for (const notification of pendingNotifications) {
                 try {
                     this.wsService.sendNotification(notification.userId, {

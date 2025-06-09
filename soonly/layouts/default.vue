@@ -1,6 +1,7 @@
 <template>
   <div class="min-h-screen flex flex-col bg-black text-white">
     <AppHeader />
+    <NotificationList />
     <main class="">
       <NuxtPage />
     </main>
@@ -13,4 +14,6 @@
 
 <script setup lang="ts">
 import AppHeader from './appHeader.vue'
+import NotificationList from '~/components/notification/notificationListainer.vue'
+
 </script>

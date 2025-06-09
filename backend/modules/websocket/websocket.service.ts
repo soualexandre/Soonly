@@ -15,30 +15,30 @@ export class WebSocketService {
     io.on("connection", (socket) => {
       console.log(`Cliente conectado: ${socket.id}`);
 
-      socket.on("authenticate", (token) => {
+      socket.on("authenticate", (token: string) => {
         const userId = this.authenticateUser(token);
         if (userId) {
-          socket.join(`user_${userId}`);
+          const room = `user_${userId}`;
+          socket.join(room);
+          console.log(`Usuário autenticado: ${userId}, entrou na sala: ${room}`);
         }
       });
     });
   }
 
-  sendNotification(userId: string, payload: any): Promise<void> {
-    return new Promise((resolve, reject) => {
- 
-
-      socket.emit("notification", payload, (ack: any) => {
-        if (ack.success) {
-          resolve();
-        } else {
-          reject(new Error("Erro no ack da notificação"));
-        }
-      });
-    });
+  sendNotification(userId: string, payload: any): void {
+    const room = `user_${userId}`;
+    this.fastify.io.to(room).emit("notification", payload);
+    this.fastify.log.info(`Notificação emitida para sala: ${room}`);
   }
 
   private authenticateUser(token: string): string | null {
-    return "user-id-from-token";
+    try {
+      const decoded = this.fastify.jwt.verify(token) as { userId: string };
+      return decoded.userId;
+    } catch (error) {
+      this.fastify.log.error("Erro ao verificar token JWT:", error);
+      return null;
+    }
   }
 }

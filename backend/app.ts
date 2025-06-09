@@ -23,7 +23,7 @@ export const buildApp = async () => {
 
   app.register(fastifySocketIO, {
     cors: {
-      origin: "http://localhost:3053",
+      origin: "*",
       methods: ['GET', 'POST', 'DELETE', 'PUT', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],
     }
@@ -35,11 +35,15 @@ export const buildApp = async () => {
   app.register(jwt);
   app.register(prisma);
   app.register(swagger);
+
   app.register(fastifyMultipart, {
     limits: {
       fileSize: 10 * 1024 * 1024
     }
   });
+  app.io.on('connection', (socket) => {
+    console.log('Cliente conectado:', socket.id)
+  })
 
   app.register(authRoutes, { prefix: '/auth' });
   app.register(movieRoutes, { prefix: '/movies' });
