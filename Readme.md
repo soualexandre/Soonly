@@ -87,6 +87,12 @@ Node.js (para execução local opcional)
 
 Arquivo .env com variáveis de ambiente
 
+
+## 📊 Diagrama de Classes (UML)
+
+![Diagrama de Classe](./diagrama_classe.png)
+
+
 # .env
 DATABASE_URL=postgresql://user:password@localhost:5432/soonly
 JWT_SECRET=supersecreto
