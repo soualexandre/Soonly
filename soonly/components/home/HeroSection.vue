@@ -3,7 +3,6 @@ import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
 import { useAuth } from '~/composables/useAuth';
 import { useMediaStore } from '~/stores/media';
-import type { Media } from '~/types/media';
 import api from '~/utils/axios';
 
 const mediaStore = useMediaStore();
@@ -48,8 +47,6 @@ async function createReminder() {
       type: "REMINDER",
       sentAt: releaseDate.toISOString().replace('T', ' ').slice(0, 19)
     };
-
-    console.log("reminderData", reminderData)
 
     const response = await api.post('/reminders', reminderData);
 

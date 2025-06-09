@@ -16,47 +16,51 @@ export class ReminderService {
         return list
     }
 
-    async create(data: { movieId: string; userId: string, type: NotificationType, sendAt?: Date, message?: string }) {
+    async create(data: { movieId: string; userId: string; type: NotificationType; sendAt?: Date; message?: string }) {
         const isUserExists = await this.userRepository.findById(data.userId)
         if (!isUserExists) {
             throw new Error('User does not exist')
         }
+
         const isReminderExists = await this.remindersRepository.findByMovieIdAndUserId(data.movieId, data.userId)
         if (isReminderExists) {
             throw new Error('Reminder already exists for this movie and user')
         }
+
         const reminder = await this.remindersRepository.create(data)
         if (!reminder) {
             return { success: false }
         }
 
-
         return { success: true }
     }
 
-    async createQueue(data: { movieId: string; userId: string, type: NotificationType, sendAt?: Date, message?: string }) {
+    async createQueue(data: { movieId: string; userId: string; type: NotificationType; sendAt?: Date; message?: string }) {
         const isUserExists = await this.userRepository.findById(data.userId)
         if (!isUserExists) {
             throw new Error('User does not exist')
         }
+
         const isReminderExists = await this.remindersRepository.findByMovieIdAndUserId(data.movieId, data.userId)
         if (isReminderExists) {
             throw new Error('Reminder already exists for this movie and user')
         }
-        const publisher = new SQSPublisher(sqsClient);
+
+        const publisher = new SQSPublisher(sqsClient)
         await publisher.send(process.env.SQS_QUEUE_URL!, {
-            type: "REMINDER_CREATED",
+            type: 'REMINDER_CREATED',
             payload: {
                 userId: data.userId,
                 movieId: data.movieId,
-                sendAt: new Date().toISOString(),
+                sendAt: data.sendAt ? data.sendAt.toISOString() : new Date().toISOString(),
                 message: data.message,
-                type: data.type as NotificationType
+                type: data.type,
             },
-        });
+        })
 
         return { success: true }
     }
+
     async findByUserId(userId: string) {
         if (!userId) {
             throw new Error('User ID is required')
@@ -65,6 +69,7 @@ export class ReminderService {
         if (!reminders) throw new Error('Failed to fetch reminders for user')
         return reminders
     }
+
     async deleteById(id: string): Promise<boolean> {
         try {
             const deleted = await this.remindersRepository.deleteById(id)
@@ -73,6 +78,7 @@ export class ReminderService {
             throw new Error('Failed to delete reminder')
         }
     }
+
     async findById(id: string) {
         if (!id) {
             throw new Error('Reminder ID is required')
@@ -90,5 +96,4 @@ export class ReminderService {
         if (!reminder) throw new Error('Reminder not found for movie and user')
         return reminder
     }
-
 }

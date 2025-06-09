@@ -7,9 +7,13 @@ import {
   IdParams,
   Reminder
 } from '../utils/schemas/reminder.schema'
+import { RemindersRepository } from '../modules/reminders/reminders.repository'
+import { UserRepository } from '../modules/auth/auth.repository'
 
-const remindersService = new ReminderService()
+const remindersRepository = new RemindersRepository()
+const userRepository = new UserRepository()
 
+const remindersService = new ReminderService(remindersRepository, userRepository)
 export async function reminderRoutes(app: FastifyInstance) {
   app.get('/', {
     schema: {
