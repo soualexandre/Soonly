@@ -17,18 +17,28 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@nuxtjs/i18n',
   ],
+
   i18n: {
     locales: [
-      { code: 'en', iso: 'en-US', file: 'en.json' },
-      { code: 'pt-BR', iso: 'pt-BR', file: 'pt-BR.json' }
+      { code: 'en', iso: 'en-US', file: 'en.json', name: 'English' },
+      { code: 'pt-BR', iso: 'pt-BR', file: 'pt-BR.json', name: 'Português' }
     ],
     lazy: true,
     langDir: 'locales/',
-    defaultLocale: 'pt-BR',
+    defaultLocale: 'en',
+    strategy: 'no_prefix',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_redirected',
+      alwaysRedirect: true,
+      fallbackLocale: 'en'
+    }
   },
+
   tailwindcss: {
     configPath: '~/tailwind.config.ts'
   },
+
   typescript: {
     strict: true,
     typeCheck: true,
@@ -39,15 +49,18 @@ export default defineNuxtConfig({
       }
     }
   },
+
   experimental: {
     payloadExtraction: false,
     renderJsonPayloads: true,
     componentIslands: true
   },
+
   runtimeConfig: {
     public: {
       socketBaseUrl: process.env.SOCKET_BASE_URL || "http://localhost:3053"
     }
   },
+
   plugins: ['~/plugins/toast.ts']
 })

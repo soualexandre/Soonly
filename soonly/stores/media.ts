@@ -1,9 +1,10 @@
+import { defineStore } from 'pinia';
 import type { AxiosError } from 'axios';
 import { isAxiosError } from 'axios';
-import { defineStore } from 'pinia';
 import api from '~/utils/axios';
+import {useToast}  from 'vue-toastification'
 
-export interface AppMedia {
+interface AppMedia {
   id: string;
   title: string;
   backdrop: string;
@@ -16,7 +17,6 @@ export interface AppMedia {
   userId?: string;
   movieId?: string;
 }
-
 
 interface UpcomingMediaApiResponse {
   dates: {
@@ -38,7 +38,7 @@ interface UpcomingMediaApiResponse {
   total_results: number;
 }
 
-export interface MediaStoreState {
+interface MediaStoreState {
   upcomingMedia: AppMedia[];
   featuredMedia: AppMedia | null;
   reminders: number[];
@@ -64,12 +64,14 @@ export const useMediaStore = defineStore('media', {
     },
 
     async fetchUpcomingMedia(): Promise<void> {
+      const toast = useToast()
+
       this.loading = true;
       this.error = null;
       try {
         const response = await api.get<UpcomingMediaApiResponse>('/movies/upcoming');
 
-        this.upcomingMedia = response.data.results.map((item) => ({
+        this.upcomingMedia = response.data.results.map((item: UpcomingMediaApiResponse['results'][number]) => ({
           id: String(item.id),
           title: item.title,
           overview: item.overview,
@@ -78,13 +80,12 @@ export const useMediaStore = defineStore('media', {
           backdrop: item.backdrop_path ? `https://image.tmdb.org/t/p/w780${item.backdrop_path}` : '',
           poster: item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : '',
           releaseDate: item.release_date,
-          mediaType: 'movie', 
+          mediaType: 'movie',
         }));
 
-
-        console.log('upcomingMedia', this.upcomingMedia[0]);
         this.featuredMedia = this.upcomingMedia[0] || null;
       } catch (error) {
+        toast.error('Erro ao buscar mídias futuras');
         this.handleAxiosError(error, 'Erro ao buscar mídias futuras.');
       } finally {
         this.loading = false;
@@ -94,6 +95,7 @@ export const useMediaStore = defineStore('media', {
     async fetchReminders(): Promise<void> {
       this.loading = true;
       this.error = null;
+      const toast = useToast()
 
       try {
         const response = await api.get<number[]>('/reminders');
@@ -102,6 +104,7 @@ export const useMediaStore = defineStore('media', {
           localStorage.setItem('soonly-reminders', JSON.stringify(this.reminders));
         }
       } catch (error) {
+        toast.error('Erro ao Buscar Lembretes')
         this.handleAxiosError(error, 'Erro ao buscar lembretes.');
       } finally {
         this.loading = false;
@@ -110,7 +113,7 @@ export const useMediaStore = defineStore('media', {
 
     toggleReminder(mediaId: number): void {
       if (this.reminders.includes(mediaId)) {
-        this.reminders = this.reminders.filter(id => id !== mediaId);
+        this.reminders = this.reminders.filter((id: number) => id !== mediaId);
       } else {
         this.reminders.push(mediaId);
       }

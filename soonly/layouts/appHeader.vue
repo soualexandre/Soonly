@@ -1,12 +1,13 @@
 <template>
     <header class="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-md shadow-md">
         <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <h1 @click="goToHome"class="text-xl font-semibold tracking-wider text-white drop-shadow">
+            <h1 @click="goToHome" class="text-xl font-semibold tracking-wider text-white drop-shadow">
                 {{ $t('app.name') }}
             </h1>
 
-            <div class="flex items-center gap-6" >
-                <button @click="goToReminders" v-if="isAuthenticated && userDataLoaded" class="hover:text-red-500 transition-colors font-medium">
+            <div class="flex items-center gap-6">
+                <button @click="goToReminders" v-if="isAuthenticated && userDataLoaded"
+                    class="hover:text-red-500 transition-colors font-medium">
                     {{ $t('menu.reminders') }}
                 </button>
                 <div class="relative w-48">

@@ -2,6 +2,7 @@ import type { AxiosError } from 'axios';
 import { isAxiosError } from 'axios';
 import { defineStore } from 'pinia';
 import api from '~/utils/axios';
+import {useToast}  from 'vue-toastification'
 
 export interface User {
     id: string;
@@ -86,6 +87,7 @@ export const useAuthStore = defineStore('auth', {
         async login(credentials: LoginCredentials): Promise<void> {
             this.loading = true;
             this.error = null;
+            const toast = useToast()
 
             try {
                 const response = await api.post<AuthResponse>('/auth/login', credentials);
@@ -108,6 +110,7 @@ export const useAuthStore = defineStore('auth', {
                 api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
             } catch (error) {
+                toast.error('Erro ao fazer login. Verifique suas credenciais.');
                 this.handleAuthError(error, 'Erro ao fazer login. Verifique suas credenciais.');
                 throw error;
             } finally {
@@ -118,6 +121,7 @@ export const useAuthStore = defineStore('auth', {
         async register(credentials: RegisterCredentials): Promise<void> {
             this.loading = true;
             this.error = null;
+                  const toast = useToast()
 
             try {
                 if (credentials.password !== credentials.confirmPassword) {
@@ -143,6 +147,7 @@ export const useAuthStore = defineStore('auth', {
                 api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
             } catch (error) {
+                toast.error('Erro ao criar conta. Tente novamente.')
                 this.handleAuthError(error, 'Erro ao criar conta. Tente novamente.');
                 throw error;
             } finally {

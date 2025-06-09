@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import api from '~/utils/axios'
+import {useToast}  from 'vue-toastification'
 
 export const useReminderStore = defineStore('reminder', {
     state: () => ({
@@ -20,6 +21,7 @@ export const useReminderStore = defineStore('reminder', {
     }),
     actions: {
         async fetchReminders() {
+            const toast = useToast()
             const userId = localStorage.getItem('userId')
             if (!userId) return
             this.loading = true
@@ -28,17 +30,22 @@ export const useReminderStore = defineStore('reminder', {
                 this.reminders = res.data.reminders
             } catch (error) {
                 console.error('Erro ao buscar lembretes:', error)
+                toast.error('Erro ao buscar lembretes')
             } finally {
                 this.loading = false
             }
         },
         async removeReminder(userId: string | null, movieId: string) {
             try {
+                const toast = useToast()
+
                 const res = await api.delete(`/reminders/${userId}/${movieId}`)
 
                 if (res.status !== 204) {
+                   toast.error('Erro ao remover lembrete')
                     throw new Error('Erro ao remover lembrete')
                 }
+                toast.success('Lembrete removido com sucesso!')
 
                 this.reminders = this.reminders.filter(r => r.movieId !== movieId || r.userId !== userId)
             } catch (err) {
