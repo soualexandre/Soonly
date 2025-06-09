@@ -94,9 +94,20 @@ Arquivo .env com variáveis de ambiente
 
 
 # .env
-DATABASE_URL=postgresql://user:password@localhost:5432/soonly
-JWT_SECRET=supersecreto
-TMDB_API_KEY=sua_chave_tmdb
+ACCESS_TOKEN_TMDB=
+API_KEY_TMDB=
+REDIS_URL=
+REDIS_HOST=
+REDIS_PORT=
+REDIS_PASSWORD=
+SQS_QUEUE_URL=
+SQS_REGION=
+SQS_ACCESS_KEY_ID=
+SQS_SECRET_ACCESS_KEY=
+SQS_QUEUE_NAME=
+PORT=
+JWT_SECRET=
+JWT_EXPIRATION=
 
 
 ## ⚙️ Comandos Makefile
