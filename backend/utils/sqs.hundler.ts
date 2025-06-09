@@ -1,13 +1,19 @@
 import { NotificationType, Reminder } from "@prisma/client";
 import { NotificationService } from "../modules/notification/notification.service";
 import { ReminderService } from "../modules/reminders/reminders.service";
+import { RemindersRepository } from "../modules/reminders/reminders.repository";
+import { UserRepository } from "../modules/auth/auth.repository";
+import { NotificationRepository } from "../modules/notification/notification.repository";
+const remindersRepository = new RemindersRepository()
+const userRepository = new UserRepository()
+const notificationRepository = new NotificationRepository()
+
+const reminderService = new ReminderService(remindersRepository, userRepository)
+
+const notificationService = new NotificationService(notificationRepository, reminderService)
+
 
 export class SqsHandlerService {
-  constructor(
-    private readonly notificationService: NotificationService,
-    private readonly reminderService: ReminderService
-  ) { }
-
 
   async handleMessage(body: any): Promise<void> {
     try {
@@ -15,9 +21,9 @@ export class SqsHandlerService {
       console.log("data source",)
       switch (data.type) {
         case 'REMINDER_CREATED':
-          const reminder = await this.reminderService.create(data.payload);
+          const reminder = await reminderService.create(data.payload);
           if (reminder) {
-            const createNotification = await this.notificationService.createNotification({
+            const createNotification = await notificationService.createNotification({
               movieId: data.payload.movieId,
               userId: data.payload.userId,
               message: data.payload.message || 'Você tem um lembrete!',
@@ -44,3 +50,4 @@ export class SqsHandlerService {
   }
 }
 
+reminderService

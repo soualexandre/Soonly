@@ -42,10 +42,8 @@ export async function reminderRoutes(app: FastifyInstance) {
     const { movieId, userId, type, sendAt, message } = request.body as any
  
     const reminder = await remindersService.createQueue({ movieId, userId, type, sendAt, message })
-    if (!reminder) {
-      return reply.status(500).send({ error: 'Failed to create reminder' })
-    }
-    return reply.status(201).send(reminder)
+  
+    return reminder;
   })
 
   app.get('/user/:userId', {

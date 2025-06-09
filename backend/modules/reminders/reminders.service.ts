@@ -58,7 +58,7 @@ export class ReminderService {
             },
         })
 
-        return { success: true }
+        return isUserExists;
     }
 
     async findByUserId(userId: string) {

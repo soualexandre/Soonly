@@ -1,7 +1,7 @@
 import { NotificationType } from "@prisma/client";
-import { NotificationRepository } from "./notification.repository";
 import { ReminderService } from "../reminders/reminders.service";
-import { NotificationData } from "./type/notification.type"
+import { NotificationRepository } from "./notification.repository";
+import { NotificationData } from "./type/notification.type";
 
 export class NotificationService {
     constructor(

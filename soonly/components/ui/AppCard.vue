@@ -42,7 +42,8 @@ async function handleReminderClick() {
   };
   try {
     const response = await api.post('/reminders', reminderData);
-
+    console.log("reponse", response);
+    console.log("reponse", typeof response);
     if (!response.data) {
       throw new Error('Falha ao atualizar lembrete');
     }
