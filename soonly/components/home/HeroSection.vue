@@ -5,26 +5,39 @@ import { useAuth } from '~/composables/useAuth';
 import { useMediaStore } from '~/stores/media';
 import api from '~/utils/axios';
 
+import ReminderConfirmModal from '~/components/reminder/ReminderConfirmModal.vue';
+
 const mediaStore = useMediaStore();
 const { featuredMedia } = storeToRefs(mediaStore);
 const { toggleReminder, isReminded } = mediaStore;
 const { isAuthenticated } = useAuth();
+
 const isReminderLoading = ref(false);
 const reminderError = ref<string | null>(null);
+
+const showConfirmModal = ref(false);
 
 function handleReminderClick() {
   if (!isAuthenticated.value) {
     window.location.href = '/login';
   } else if (featuredMedia.value) {
-    createReminder();
+    showConfirmModal.value = true;
   }
+}
+
+async function onConfirmReminder() {
+  showConfirmModal.value = false;
+  await createReminder();
+}
+
+function onCancelReminder() {
+  showConfirmModal.value = false;
 }
 
 const formattedReleaseDate = computed(() => {
   const date = new Date();
   return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
 });
-
 
 async function createReminder() {
   if (!featuredMedia.value) return;
@@ -49,8 +62,6 @@ async function createReminder() {
     };
 
     const response = await api.post('/reminders', reminderData);
-
-    console.log("response", response);
 
     if (!response.data) {
       throw new Error('Failed to create reminder');
@@ -118,7 +129,9 @@ async function createReminder() {
           <div v-if="reminderError" class="mt-4 text-red-400 font-semibold text-sm drop-shadow">
             {{ reminderError }}
           </div>
-
+          
+          <ReminderConfirmModal :show="showConfirmModal" :mediaTitle="featuredMedia?.title ?? ''"
+            @confirm="onConfirmReminder" @cancel="onCancelReminder" />
         </div>
       </div>
     </div>

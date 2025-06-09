@@ -23,7 +23,7 @@ export default defineNuxtConfig({
       { code: 'pt-BR', iso: 'pt-BR', file: 'pt-BR.json' }
     ],
     lazy: true,
-    langDir:'locales/',
+    langDir: 'locales/',
     defaultLocale: 'pt-BR',
   },
   tailwindcss: {
@@ -48,5 +48,6 @@ export default defineNuxtConfig({
     public: {
       socketBaseUrl: process.env.SOCKET_BASE_URL || "http://localhost:3053"
     }
-  }
+  },
+  plugins: ['~/plugins/toast.ts']
 })

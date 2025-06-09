@@ -3,7 +3,7 @@ import { useRouter } from 'vue-router';
 import type { Media } from '~/types/media';
 import { ref } from 'vue';
 import api from '~/utils/axios';
-const mediaStore = useMediaStore();
+import ReminderConfirmModal from '~/components/reminder/ReminderConfirmModal.vue';
 
 const props = defineProps<{
   media: Media;
@@ -12,49 +12,61 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'remind', id: string): void;
+  (e: 'remind', id: number): void;
 }>();
 
 const router = useRouter();
 const loading = ref(false);
+const showModal = ref(false);
 const userId = localStorage.getItem('userId');
 
-async function handleReminderClick() {
-
-  if (!props.isAuthenticated) {
-    router.push('/login');
-    return;
-  }
-
-  if (loading.value) return;
-
+async function callApiReminder() {
   loading.value = true;
-  const { featuredMedia } = storeToRefs(mediaStore);
+
   const releaseDate = new Date();
   releaseDate.setDate(releaseDate.getDate() + 1);
 
   const reminderData = {
-    movieId: String(featuredMedia?.value?.id),
-    userId: userId,
-    message: `Não perca o lançamento de ${featuredMedia?.value?.title} amanhã!`,
-    type: "REMINDER",
-    sentAt: releaseDate?.toISOString().replace('T', ' ').slice(0, 19)
+    movieId: String(props.media.id),
+    userId,
+    message: `Não perca o lançamento de ${props.media.title} amanhã!`,
+    type: 'REMINDER',
+    sentAt: releaseDate.toISOString().replace('T', ' ').slice(0, 19),
   };
+
   try {
     const response = await api.post('/reminders', reminderData);
-    console.log("reponse", response);
-    console.log("reponse", typeof response);
+
     if (!response.data) {
-      throw new Error('Falha ao atualizar lembrete');
+      throw new Error('Falha ao criar lembrete');
     }
 
-    emit('remind', props.media.id);
+    emit('remind', Number(props.media.id));
   } catch (error) {
     console.error(error);
-    alert('Não foi possível atualizar o lembrete. Tente novamente.');
+    alert('Erro ao adicionar lembrete. Tente novamente.');
   } finally {
     loading.value = false;
   }
+}
+
+function onReminderButtonClick() {
+  if (!props.isAuthenticated) {
+    router.push('/login');
+    return;
+  }
+  if (loading.value) return;
+
+  showModal.value = true;
+}
+
+function onModalConfirm() {
+  showModal.value = false;
+  callApiReminder();
+}
+
+function onModalCancel() {
+  showModal.value = false;
 }
 </script>
 
@@ -92,12 +104,15 @@ async function handleReminderClick() {
         {{ media.title }}
       </h3>
 
-      <button @click="handleReminderClick" :disabled="!props.isAuthenticated || loading" :class="[
+      <ReminderConfirmModal :show="showModal" :mediaTitle="media.title" @confirm="onModalConfirm"
+        @cancel="onModalCancel" />
+
+      <button @click="onReminderButtonClick" :disabled="!props.isAuthenticated || loading" :class="[
         'w-full py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-300 transform hover:scale-105 focus:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/50 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl',
         isReminded
           ? 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white hover:shadow-green-500/30'
           : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white hover:shadow-blue-500/30',
-        !props.isAuthenticated || loading ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'
+        !props.isAuthenticated || loading ? 'cursor-not-allowed opacity-70' : 'cursor-pointer',
       ]" :aria-label="isReminded ? `Remover lembrete para ${media.title}` : `Adicionar lembrete para ${media.title}`">
         <svg v-if="isReminded" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
           <path
@@ -106,7 +121,7 @@ async function handleReminderClick() {
         <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
         </svg>
-        {{ loading ? 'Aguarde...' : (isReminded ? 'Lembrete Ativo' : 'Adicionar Lembrete') }}
+        {{ loading ? 'Aguarde...' : isReminded ? 'Lembrete Ativo' : 'Adicionar Lembrete' }}
       </button>
     </div>
   </article>
