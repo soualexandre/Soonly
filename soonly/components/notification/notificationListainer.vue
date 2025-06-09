@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { io, type Socket } from "socket.io-client";
-import { useToast } from "vue-toastification";
+// import { useToast } from "vue-toastification";
 import { onMounted, onUnmounted } from "vue";
 import { useAuthStore } from "~/stores/auth";
 
@@ -30,15 +30,15 @@ onMounted(() => {
     console.error("Erro na conexão:", err.message);
   });
 
-  socket.value.on("notification", (data: any) => {
-    toast.info(data.message, {
-      timeout: 5000,
-      closeOnClick: true,
-      pauseOnFocusLoss: true,
-      icon: "🎬",
-      onClick: () => handleNotificationClick(data)
-    });
-  });
+//   socket.value.on("notification", (data: any) => {
+//     toast.info(data.message, {
+//       timeout: 5000,
+//       closeOnClick: true,
+//       pauseOnFocusLoss: true,
+//       icon: "🎬",
+//       onClick: () => handleNotificationClick(data)
+//     });
+//   });
 });
 
 onUnmounted(() => {

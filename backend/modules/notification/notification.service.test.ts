@@ -15,7 +15,7 @@ describe('NotificationService', () => {
     userId: 'user456',
     message: 'Test message',
     sentAt: new Date(),
-    type: NotificationType.INFO,
+    type: NotificationType.REMINDER,
   }
 
   beforeEach(() => {

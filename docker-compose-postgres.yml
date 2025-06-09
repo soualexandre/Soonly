@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # network_mode: host
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres:/var/lib/postgresql@14/data
+    environment:
+      # POSTGRES_DATABASES: ${POSTGRES_DATABASES-postgres}
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+
+volumes:
+  postgres:
+    driver: local
