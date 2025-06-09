@@ -13,6 +13,8 @@ export interface AppMedia {
   overview: string;
   releaseDate: string;
   mediaType: 'movie' | 'tv';
+  userId?: string;
+  movieId?: string;
 }
 
 

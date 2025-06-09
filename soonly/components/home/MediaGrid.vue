@@ -30,7 +30,7 @@ useIntersectionObserver(
   },
   { threshold: 0.1 }
 );
-
+const { isAuthenticated } = useAuth();
 
 const visibleMedia = computed<Media[]>(() => {
   return upcomingMedia.value.slice(0, visibleItems.value);
@@ -68,7 +68,7 @@ const loadingSkeletonsCount = computed(() => {
         <div ref="gridRef"
           class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6 lg:gap-8">
           <AppCard v-for="item in visibleMedia" :key="item.id" :media="item" :is-reminded="isReminded(Number(item.id))"
-            @remind="toggleReminder(Number(item.id))"
+            :is-authenticated="isAuthenticated" @remind="toggleReminder(Number(item.id))"
             class="transform transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/50" />
           <div ref="sentinel" class="h-1"></div>
           <AppSkeleton v-for="i in loadingSkeletonsCount" :key="`skeleton-${i}`" class="aspect-[2/3]" />

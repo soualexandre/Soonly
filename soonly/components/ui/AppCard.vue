@@ -1,14 +1,27 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
+import { ref } from 'vue';
 import type { Media } from '~/types/media';
 
-defineProps<{
+const props = defineProps<{
   media: Media;
   isReminded: boolean;
+  isAuthenticated: boolean; // novo prop
 }>();
 
 const emit = defineEmits<{
   (e: 'remind', id: string): void;
 }>();
+
+const router = useRouter();
+
+function handleReminderClick() {
+  if (!props.isAuthenticated) {
+    router.push('/login');
+  } else {
+    emit('remind', props.media.id);
+  }
+}
 </script>
 
 <template>
@@ -50,14 +63,16 @@ const emit = defineEmits<{
       </h3>
       
       <button
-        @click="emit('remind', media.id)"
-        :class="[
+        @click="handleReminderClick"
+        :class="[ 
           'w-full py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-300 transform hover:scale-105 focus:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/50 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl',
           isReminded 
             ? 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white hover:shadow-green-500/30' 
-            : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white hover:shadow-blue-500/30'
+            : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white hover:shadow-blue-500/30',
+          !props.isAuthenticated ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'
         ]"
         :aria-label="isReminded ? `Remover lembrete para ${media.title}` : `Adicionar lembrete para ${media.title}`"
+        :disabled="!props.isAuthenticated"
       >
         <svg v-if="isReminded" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
           <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>

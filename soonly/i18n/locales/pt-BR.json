@@ -72,5 +72,9 @@
     "signUp": "Cadastre-se",
     "orContinueWith": "Ou continue com",
     "resetPassword": "Redefinir Senha"
+  },
+  "auth":{
+    "login": "Entrar",
+    "logout": "Sair"
   }
 }

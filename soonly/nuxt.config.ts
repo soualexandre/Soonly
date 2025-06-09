@@ -43,5 +43,10 @@ export default defineNuxtConfig({
     payloadExtraction: false,
     renderJsonPayloads: true,
     componentIslands: true
+  },
+  runtimeConfig: {
+    public: {
+      socketBaseUrl: process.env.SOCKET_BASE_URL || "http://localhost:3053"
+    }
   }
 })

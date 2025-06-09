@@ -8,3 +8,21 @@ body {
     background-color: #121212;
     color: #fff;
 }
+
+:root {
+  --toastify-color-info: #6366f1;
+  --toastify-icon-color-info: var(--toastify-color-info);
+  --toastify-font-family: 'Inter', sans-serif;
+}
+
+.Vue-Toastification__toast {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: #1f2937;
+  color: #f9fafb;
+  cursor: pointer;
+}
+
+.Vue-Toastification__toast--info {
+  border-left: 4px solid #6366f1;
+}

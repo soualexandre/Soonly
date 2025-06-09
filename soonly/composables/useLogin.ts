@@ -47,7 +47,10 @@ export function useLogin() {
     try {
       const { data } = await api.post('/auth/login', form)
       localStorage.setItem('token', data.token)
-      router.push('/dashboard')
+      localStorage.setItem('usename', data.username)
+      localStorage.setItem('email', data.username)
+      localStorage.setItem('userId', data.userId)
+      router.push('/')
     } catch (err: any) {
       error.value = err.response?.data?.message || 'Erro ao fazer login'
     } finally {

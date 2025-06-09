@@ -2,7 +2,10 @@ import { UserRepository } from './auth.repository'
 import bcrypt from 'bcrypt'
 
 export class AuthService {
-    private userRepo = new UserRepository()
+    private userRepo: UserRepository;
+    constructor(userRepo?: UserRepository) {
+        this.userRepo = userRepo ?? new UserRepository();
+    }
 
     async register(name: string, email: string, password: string) {
         const existingUser = await this.userRepo.findByEmail(email)
@@ -21,7 +24,7 @@ export class AuthService {
         }
 
         const valid = await bcrypt.compare(password, user.passwordHash)
-        console.log('Password valid:', valid);
+
         if (!valid) {
             throw new Error('Invalid email or password')
         }

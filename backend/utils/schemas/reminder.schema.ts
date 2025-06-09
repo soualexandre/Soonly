@@ -2,7 +2,6 @@ import { Static, Type } from '@sinclair/typebox'
 import { NotificationType } from '@prisma/client'
 
 export const Reminder = Type.Object({
-  id: Type.String({ format: 'uuid' }),
   userId: Type.String({ format: 'uuid' }),
   movieId: Type.String(),
   type: Type.Optional(Type.Enum(NotificationType)),

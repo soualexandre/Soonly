@@ -41,7 +41,7 @@ export async function authRoutes(app: FastifyInstance) {
       try {
         const user = await authService.authenticate(email, password)
         const token = await reply.jwtSign({ userId: user.id })
-        return reply.send({ token })
+        return reply.send({ userId: user.id, username: user.name, email: user.email, token: token })
       } catch (error: any) {
         return reply.code(401).send({ error: error.message })
       }

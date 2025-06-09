@@ -1,7 +1,7 @@
 {
   "include": [
     "src/**/*",
-    "types/**/*"
+    "types/**/*","**/*.ts", "**/*.test.ts" 
   ],
   "compilerOptions": {
     "target": "ES2020",
@@ -14,6 +14,10 @@
     "typeRoots": [
       "./node_modules/@types",
       "./types"
+    ],
+    "types": [
+      "jest",
+      "node"
     ],
     "baseUrl": "./",
     "paths": {

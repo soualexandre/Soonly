@@ -72,5 +72,9 @@
     "signUp": "Sign Up",
     "orContinueWith": "Or continue with",
     "resetPassword": "Reset Password"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout"
   }
 }
