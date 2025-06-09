@@ -99,19 +99,23 @@ JWT_SECRET=supersecreto
 TMDB_API_KEY=sua_chave_tmdb
 
 
-⚙️ Comandos Makefile
-Na raiz do projeto:
-make dev         # Sobe Redis e PostgreSQL
+## ⚙️ Comandos Makefile
+
+### Na raiz do projeto:
+
+```bash
+make dev
+
 
 No frontend (/soonly):
 cd soonly
-make install
+```bash
 make dev
 
 
 No backend (/backend):
 cd backend
-make install
+```bash
 make dev
 
 
