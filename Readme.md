@@ -118,23 +118,5 @@ cd backend
 ```bash
 make dev
 
-
-🛣️ Roadmap
- Integração com TMDb
-
- Sistema de lembretes
-
- Autenticação segura com JWT
-
- Integração com mensageria (RabbitMQ ou Kafka)
-
- Finalizar observabilidade com OpenTelemetry e Jaeger
-
- Notificações via e-mail ou push
-
- Dashboard de lembretes e lançamentos
-
- Integração com CI/CD (GitHub Actions)
-
  📄 Licença
 Distribuído sob a licença MIT. Consulte LICENSE para mais informações.
