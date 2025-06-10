@@ -63,6 +63,55 @@
         Monitoramento de desempenho com Jaeger
 
         Logs estruturados para debug
+# Estrutura de Pastas 
+    .
+    ├── backend
+    │   ├── config
+    │   ├── external
+    │   │   └── types
+    │   ├── logs
+    │   ├── modules
+    │   │   ├── auth
+    │   │   │   └── types
+    │   │   ├── movies
+    │   │   ├── notification
+    │   │   │   ├── job
+    │   │   │   └── type
+    │   │   ├── reminders
+    │   │   │   └── type
+    │   │   └── websocket
+    │   ├── plugins
+    │   ├── prisma
+    │   │   └── migrations
+    │   │       └── 20250606154606_migration_project
+    │   ├── routes
+    │   ├── tests
+    │   ├── types
+    │   └── utils
+    │       └── schemas
+    └── frontend
+        ├── assets
+        │   └── css
+        ├── components
+        │   ├── home
+        │   ├── notification
+        │   ├── reminder
+        │   └── ui
+        ├── composables
+        ├── config
+        ├── i18n
+        │   └── locales
+        ├── layouts
+        ├── middleware
+        ├── pages
+        ├── plugins
+        ├── public
+        ├── server
+        ├── stores
+        ├── types
+        └── utils
+
+    46 directories
 
 ⚙️ Pré-requisitos
     Docker 20.10+

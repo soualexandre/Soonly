@@ -82,10 +82,8 @@ async function createReminder() {
 }
 
 const isAlreadyReminded = computed(() => {
-  return (
-    isReminded(Number(featuredMedia.value?.id) ?? 0) ||
-    featuredMedia.value?.isReminding
-  );
+  if (!featuredMedia.value) return false;
+  return isReminded(Number(featuredMedia.value.id));
 });
 </script>
 
