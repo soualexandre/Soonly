@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import type { AxiosError } from 'axios';
 import { isAxiosError } from 'axios';
 import api from '~/utils/axios';
-import {useToast}  from 'vue-toastification'
+import { useToast } from 'vue-toastification'
 
 interface AppMedia {
   id: string;
@@ -16,6 +16,7 @@ interface AppMedia {
   mediaType: 'movie' | 'tv';
   userId?: string;
   movieId?: string;
+  isReminding: boolean;
 }
 
 interface UpcomingMediaApiResponse {
@@ -46,6 +47,9 @@ interface MediaStoreState {
   error: string | null;
 }
 
+
+
+
 export const useMediaStore = defineStore('media', {
   state: (): MediaStoreState => ({
     upcomingMedia: [],
@@ -71,18 +75,28 @@ export const useMediaStore = defineStore('media', {
       try {
         const response = await api.get<UpcomingMediaApiResponse>('/movies/upcoming');
 
-        this.upcomingMedia = response.data.results.map((item: UpcomingMediaApiResponse['results'][number]) => ({
-          id: String(item.id),
-          title: item.title,
-          overview: item.overview,
-          backdrop_path: item.backdrop_path,
-          poster_path: item.poster_path,
-          backdrop: item.backdrop_path ? `https://image.tmdb.org/t/p/w780${item.backdrop_path}` : '',
-          poster: item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : '',
-          releaseDate: item.release_date,
-          mediaType: 'movie',
-        }));
+        const { data } = await api.get('/reminders');
+        const reminderIds = new Set(data.map((item: any) => String(item.movieId)));
+        this.upcomingMedia = response.data.results.map((item) => {
+          const itemId = String(item.id); 
+          const isReminding = reminderIds.has(itemId);
 
+          return {
+            id: itemId,
+            title: item.title,
+            overview: item.overview,
+            backdrop_path: item.backdrop_path,
+            poster_path: item.poster_path,
+            backdrop: item.backdrop_path ? `https://image.tmdb.org/t/p/w780${item.backdrop_path}` : '',
+            poster: item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : '',
+            releaseDate: item.release_date,
+            mediaType: 'movie',
+            isReminding,
+          };
+        });
+
+
+        console.log("up meedia message", JSON.stringify(this.upcomingMedia[0]));
         this.featuredMedia = this.upcomingMedia[0] || null;
       } catch (error) {
         toast.error('Erro ao buscar mídias futuras');

@@ -1,133 +1,130 @@
-# 🎬 Sonnly – Agenda de Estreias com Lembretes
+# 🎬 Sonnly – Agenda de Estreias com 
 
-**Sonnly** é uma aplicação fullstack moderna, desenvolvida como parte de um desafio técnico. Seu objetivo é permitir que usuários visualizem lançamentos futuros de filmes e agendem lembretes personalizados para não perder nenhuma estreia.
+🌟 Visão Geral
+O Sonnly é uma aplicação fullstack moderna que permite aos usuários visualizar lançamentos futuros de filmes e agendar lembretes personalizados. Desenvolvido como desafio técnico, integra diversas tecnologias em uma arquitetura modular e escalável.
 
-A arquitetura do projeto é modular, com frontend Vue.js, backend Node.js com Fastify, banco PostgreSQL via Prisma, mensageria para envio de lembretes e infraestrutura containerizada com Redis e Docker.
+graph TD
+    A[Frontend Vue.js] --> B[Backend Fastify]
+    B --> C[Banco de Dados PostgreSQL]
+    B --> D[API TMDb]
+    B --> E[Sistema de Mensageria]
+    E --> F[Serviço de Lembretes]
+    C --> B
+    D --> B
 
----
+🚀 Tecnologias e Suas Funções
 
-## 🌐 Visão Geral
+🖥️ Frontend (Vue.js)
+    Tecnologia	Função	Localização
+    Vue.js 3 + Vite	Framework principal para UI reativa	/soonly
+    Tailwind CSS/Vuetify	Estilização e componentes UI	/soonly
+    Pinia/Vuex	Gerenciamento de estado global	/soonly/stores
+    Vue Router	Navegação entre páginas	/soonly/router
+    Vue i18n	Internacionalização	/soonly/locales
+    WebSockets	Comunicação em tempo real	Integrado nos componentes
 
-- 🔐 Autenticação com JWT
-- 🎬 Integração com TMDb API para lançamentos futuros
-- 🧠 Gerenciamento de lembretes por usuário
-- 📨 Emissão de eventos para lembretes via mensageria
-- 💾 Persistência com PostgreSQL e Prisma ORM
-- 📈 Observabilidade com OpenTelemetry + Jaeger *(em progresso)*
-- 🧪 Testes unitários e de carga com Jest e K6
-- ☁️ Deploy containerizado com Docker e Makefiles modulares
+⚙️ Backend (Node.js/Fastify)
+    Tecnologia	Função	Localização
+    Fastify	Framework para API RESTful	/backend
+    Prisma ORM	Interface com PostgreSQL	/backend/prisma
+    JWT	Autenticação de usuários	/backend/auth
+    Redis	Cache e gerenciamento de sessões	Integrado
+    RabbitMQ/SQS	Sistema de mensageria para lembretes	/backend/queues
+    OpenTelemetry+Jaeger	Observabilidade e tracing	/backend/observability
 
----
+🗄️ Infraestrutura
+    Tecnologia	Função
+    Docker	Containerização de serviços
+    PostgreSQL	Armazenamento persistente de dados
+    Redis	Cache e filas de mensagens
+    Makefile	Automação de comandos
 
-🖥️ Frontend – Vue.js
-Localizado em /soonly
+🧩 Funcionalidades Principais
 
-Funcionalidades e tecnologias:
-⚙️ Vue.js 3 + Vite
+journey
+    title Fluxo do Usuário Sonnly
+    section Autenticação
+      Login/Cadastro: 5: Usuário
+    section Explorar
+      Buscar Filmes: 8: Usuário
+      Ver Detalhes: 7: Usuário
+    section Lembretes
+      Criar Lembrete: 6: Usuário
+      Receber Notificação: 4: Sistema
+    section Perfil
+      Gerenciar Preferências: 3: Usuário
 
-🎨 Tailwind CSS, Vuetify ou ShadCN-Vue
+    🎥 Catálogo de Filmes
 
-📦 Gerenciamento de estado com Pinia ou Vuex
+    Integração em tempo real com TMDb API
 
-🌐 Integração com REST APIs e WebSockets
+    ⏰ Sistema de Lembretes
 
-♻️ Componentes modulares e reutilizáveis
+        Agendamento personalizado por usuário
 
-🔐 Autenticação com JWT ou OAuth
+        Notificações via WebSocket
 
-🚀 Otimizações com Lazy Loading, Code Splitting e SSR (Nuxt.js)
+        Gerenciamento de lembretes ativos
 
-🌍 Internacionalização (i18n) e suporte a temas dinâmicos
+    🔐 Autenticação Segura
 
-🔧 Backend – Node.js com Fastify
-Localizado em /backend
+        Cadastro e login com JWT
 
-Funcionalidades e tecnologias:
-⚙️ API RESTful com Fastify
+        Proteção de rotas sensíveis
 
-📄 Endpoints CRUD para usuários e lembretes
+        Gerenciamento de sessões
 
-🔐 Autenticação via JWT
+    📊 Observabilidade
 
-💾 Banco de dados relacional com PostgreSQL + Prisma
+        Tracing de requisições com OpenTelemetry
 
-🧾 Logs estruturados com suporte a traceability
+        Monitoramento de desempenho com Jaeger
 
-📬 Emissão de eventos via mensageria (RabbitMQ, etc.)
+        Logs estruturados para debug
 
-📈 Observabilidade com OpenTelemetry + Jaeger (em andamento)
+⚙️ Pré-requisitos
+    Docker 20.10+
 
-🧪 Testes
-✅ Jest para testes unitários
+    Docker Compose 2.5+
 
-📊 K6 para testes de carga
+    Node.js 18.x (opcional para desenvolvimento)
 
-Rodar testes
+    Conta no TMDb (para API key)
 
-# Testes unitários
-npm run test
+# Chaves de API
+    ACCESS_TOKEN_TMDB=seu_token_de_acesso
+    API_KEY_TMDB=sua_chave_api_tmdb
 
-# Testes de carga com K6
-k6 run tests/load/reminders.test.js
+    # Configurações Redis
+    REDIS_HOST=redis
+    REDIS_PORT=6379
+    REDIS_PASSWORD=
 
-Rodar testes
-# Testes unitários
-npm run test
+    # Configurações AWS SQS (opcional)
+    SQS_QUEUE_URL=
+    SQS_REGION=us-east-1
+    SQS_ACCESS_KEY_ID=
+    SQS_SECRET_ACCESS_KEY=
 
-# Testes de carga com K6
-k6 run tests/load/reminders.test.js
+    # Configurações da Aplicação
+    PORT=3000
+    JWT_SECRET=super_secreto_altere_isto
+    JWT_EXPIRATION=24h
 
-🐳 Como Rodar o Projeto
-✅ Pré-requisitos
-Docker
+    # Banco de Dados
+    DATABASE_URL="postgresql://user:password@postgres:5432/soonly?schema=public"
 
-Docker Compose
+🚀 Instalação com Docker
+    # Clone o repositório
 
-Node.js (para execução local opcional)
+    #Instalação Frontend
+        git clone https://github.com/seu-usuario/soonly.git
+        cd soonly
+        # Construa e inicie os containers
+        make dev
 
-Arquivo .env com variáveis de ambiente
-
-
-## 📊 Diagrama de Classes (UML)
-
-![Diagrama de Classe](./diagrama_classe.png)
-
-
-# .env
-ACCESS_TOKEN_TMDB=
-API_KEY_TMDB=
-REDIS_URL=
-REDIS_HOST=
-REDIS_PORT=
-REDIS_PASSWORD=
-SQS_QUEUE_URL=
-SQS_REGION=
-SQS_ACCESS_KEY_ID=
-SQS_SECRET_ACCESS_KEY=
-SQS_QUEUE_NAME=
-PORT=
-JWT_SECRET=
-JWT_EXPIRATION=
-
-
-## ⚙️ Comandos Makefile
-
-### Na raiz do projeto:
-
-```bash
-make dev
-
-
-No frontend (/soonly):
-cd soonly
-```bash
-make dev
-
-
-No backend (/backend):
-cd backend
-```bash
-make dev
-
- 📄 Licença
-Distribuído sob a licença MIT. Consulte LICENSE para mais informações.
+    #Instalação Frontend
+        git clone https://github.com/seu-usuario/soonly.git
+        cd soonly
+        # Construa e inicie os containers
+        make dev
