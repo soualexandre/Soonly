@@ -3,7 +3,7 @@
 🌟 Visão Geral
         O Sonnly é uma aplicação fullstack moderna que permite aos usuários visualizar lançamentos futuros de filmes e agendar lembretes personalizados. Desenvolvido como desafio técnico, integra diversas tecnologias em uma arquitetura modular e escalável.
 
-![Estrutura do Projeto](./estrutura.png)
+![Estrutura do Projeto](./estrtura.png)
 
 🚀 Tecnologias e Suas Funções
 
