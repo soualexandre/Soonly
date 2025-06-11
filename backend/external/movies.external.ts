@@ -29,19 +29,24 @@ export class TMDBService {
     const response = await this.client.get('/movie/popular', {
       params: { language: 'pt-BR' },
     });
-    console.log('TMDB Response:', response);
     return response.data;
   }
-  async upcomingMovies() {
+  async upcomingMovies(page: number) {
     const response = await this.client.get('/movie/upcoming', {
-      params: { language: 'pt-BR' },
+      params: { language: 'pt-BR', page: page },
     });
+
     return response.data;
   }
+
   async findById(id: string) {
     const response = await this.client.get(`/movie/${id}`, {
       params: { language: 'pt-BR' },
     });
     return response.data;
   }
+
+}
+function isSameOrAfter(date1: dayjs.Dayjs, date2: dayjs.Dayjs): boolean {
+  return date1.isAfter(date2) || date1.isSame(date2);
 }

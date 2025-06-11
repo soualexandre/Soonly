@@ -6,31 +6,37 @@
 ![Estrutura do Projeto](./estrtura.png)
 
 🚀 Tecnologias e Suas Funções
+### 🖥️ Frontend (Vue.js/Nuxt)
 
-🖥️ Frontend (Vue.js)
-        Tecnologia	Função	Localização
-        Vue.js 3 + Vite	Framework principal para UI reativa	/soonly
-        Tailwind CSS/Vuetify	Estilização e componentes UI	/soonly
-        Pinia/Vuex	Gerenciamento de estado global	/soonly/stores
-        Vue Router	Navegação entre páginas	/soonly/router
-        Vue i18n	Internacionalização	/soonly/locales
-        WebSockets	Comunicação em tempo real	Integrado nos componentes
+| Tecnologia               | Função                                  | Localização               |
+|--------------------------|------------------------------------------|----------------------------|
+| Vue.js 3 + Vite          | Framework principal para UI reativa      | `/soonly`                 |
+| Tailwind CSS / Vuetify   | Estilização e componentes UI             | `/soonly`                 |
+| Pinia / Vuex             | Gerenciamento de estado global           | `/soonly/stores`          |
+| Vue Router               | Navegação entre páginas                  | `/soonly/router`          |
+| Vue i18n                 | Internacionalização                      | `/soonly/locales`         |
+| WebSockets               | Comunicação em tempo real                | Integrado nos componentes |
 
-⚙️ Backend (Node.js/Fastify)
-        Tecnologia	Função	Localização
-        Fastify	Framework para API RESTful	/backend
-        Prisma ORM	Interface com PostgreSQL	/backend/prisma
-        JWT	Autenticação de usuários	/backend/auth
-        Redis	Cache e gerenciamento de sessões	Integrado
-        RabbitMQ/SQS	Sistema de mensageria para lembretes	/backend/queues
-        OpenTelemetry+Jaeger	Observabilidade e tracing	/backend/observability
+### ⚙️ Backend (Node.js/Fastify)
 
-🗄️ Infraestrutura
-    Tecnologia	Função
-    Docker	Containerização de serviços
-    PostgreSQL	Armazenamento persistente de dados
-    Redis	Cache e filas de mensagens
-    Makefile	Automação de comandos
+| Tecnologia               | Função                                      | Localização              |
+|--------------------------|---------------------------------------------|---------------------------|
+| Fastify                  | Framework para API RESTful                  | `/backend`               |
+| Prisma ORM               | Interface com PostgreSQL                    | `/backend/prisma`        |
+| JWT                      | Autenticação de usuários                    | `/backend/auth`          |
+| Redis                    | Cache e gerenciamento de sessões           | Integrado                |
+| SQS / RabbitMQ           | Sistema de mensageria para lembretes       | `/backend/queues`        |
+| OpenTelemetry + Jaeger   | Observabilidade e tracing                   | `/backend/observability` |
+
+### 🗄️ Infraestrutura
+
+| Tecnologia   | Função                                |
+|--------------|----------------------------------------|
+| Docker       | Containerização de serviços            |
+| PostgreSQL   | Armazenamento persistente de dados     |
+| Redis        | Cache e filas de mensagens             |
+| Makefile     | Automação de comandos                  |
+
 
 🧩 Funcionalidades Principais
 
@@ -83,7 +89,6 @@
     │   ├── plugins
     │   ├── prisma
     │   │   └── migrations
-    │   │       └── 20250606154606_migration_project
     │   ├── routes
     │   ├── tests
     │   ├── types

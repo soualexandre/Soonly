@@ -1,13 +1,12 @@
 export interface Media {
   id: string;
   title: string;
+  overview: string;
   backdrop: string;
   poster: string;
-  backdrop_path: string;
-  poster_path: string;
-  overview: string;
   releaseDate: string;
   mediaType: 'movie' | 'tv';
+  isReminding: boolean;
 }
 
 export interface MediaStoreState {

@@ -1,50 +1,48 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { useIntersectionObserver } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
-import { useMediaStore } from '~/stores/media';
+import { ref } from 'vue';
 import AppCard from '~/components/ui/AppCard.vue';
 import AppSkeleton from '~/components/ui/AppSkaleton.vue';
-import { useIntersectionObserver } from '@vueuse/core';
-import type { Media } from '~/types/media';
+import { useMediaStore } from '~/stores/media';
+import { useAuth } from '~/composables/useAuth';
 
-defineProps<{
-  mediaList: Array<any>,
-  isRemindedFn: (id: number) => boolean
-}>();
+function debounce<T extends (...args: any[]) => any>(fn: T, delay = 300) {
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+  return (...args: Parameters<T>) => {
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => fn(...args), delay);
+  };
+}
 
 const mediaStore = useMediaStore();
-const { upcomingMedia } = storeToRefs(mediaStore);
-const { toggleReminder, isReminded } = mediaStore;
+const { upcomingMedia, currentPage, totalPages, loading, isReminded } = storeToRefs(mediaStore);
+const { toggleReminder, fetchMoreUpcomingMedia } = mediaStore;
 
 const gridRef = ref<HTMLElement | null>(null);
 const sentinel = ref<HTMLElement | null>(null);
+const { isAuthenticated } = useAuth();
 
-const visibleItems = ref(5);
+
+const loadMore = debounce(async () => {
+  await fetchMoreUpcomingMedia();
+});
 
 useIntersectionObserver(
   sentinel,
   ([{ isIntersecting }]) => {
-    if (isIntersecting && visibleItems.value < upcomingMedia.value.length) {
-      visibleItems.value += 5;
+    console.log('Sentinel isIntersecting:', isIntersecting);
+    if (isIntersecting) {
+      loadMore();
     }
   },
   { threshold: 0.1 }
 );
-const { isAuthenticated } = useAuth();
-
-const visibleMedia = computed<Media[]>(() => {
-  return upcomingMedia.value.slice(0, visibleItems.value);
-});
-
-const loadingSkeletonsCount = computed(() => {
-  const diff = upcomingMedia.value.length - visibleItems.value;
-  return diff > 0 ? Math.min(5, diff) : 0;
-});
 </script>
 
 <template>
   <section
-    class="min-h-screen  mx-auto bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-16 px-4 sm:px-6 lg:px-8"
+    class="min-h-screen mx-auto bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-16 px-4 sm:px-6 lg:px-8"
     aria-labelledby="upcoming-media-section">
     <div class="max-w-7xl mx-auto">
       <div class="text-center mb-16">
@@ -67,13 +65,15 @@ const loadingSkeletonsCount = computed(() => {
 
         <div ref="gridRef"
           class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6 lg:gap-8">
-          <AppCard v-for="item in visibleMedia" :key="item.id" :media="item" :is-reminded="isReminded(Number(item.id))"
+          <AppCard v-for="item in upcomingMedia" :key="item.id" :media="item" :is-reminded="isReminded(Number(item.id))"
             :is-authenticated="isAuthenticated" @remind="toggleReminder(Number(item.id))"
             class="transform transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/50" />
-          <div ref="sentinel" class="h-1"></div>
-          <AppSkeleton v-for="i in loadingSkeletonsCount" :key="`skeleton-${i}`" class="aspect-[2/3]" />
+
+          <AppSkeleton v-if="loading" v-for="i in 5" :key="`skeleton-${i}`" class="aspect-[2/3]" />
         </div>
       </div>
     </div>
+
+    <div ref="sentinel" class="h-10"></div>
   </section>
 </template>

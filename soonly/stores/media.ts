@@ -3,21 +3,7 @@ import type { AxiosError } from 'axios';
 import { isAxiosError } from 'axios';
 import api from '~/utils/axios';
 import { useToast } from 'vue-toastification'
-
-interface AppMedia {
-  id: string;
-  title: string;
-  backdrop: string;
-  poster: string;
-  backdrop_path: string;
-  poster_path: string;
-  overview: string;
-  releaseDate: string;
-  mediaType: 'movie' | 'tv';
-  userId?: string;
-  movieId?: string;
-  isReminding: boolean;
-}
+import type { Media } from '~/types/media';
 
 interface UpcomingMediaApiResponse {
   dates: {
@@ -29,26 +15,49 @@ interface UpcomingMediaApiResponse {
     id: number;
     title: string;
     overview: string;
-    backdrop_path: string;
-    poster_path: string;
+    backdrop: string;
+    poster: string;
     release_date: string;
     vote_average: number;
     vote_count: number;
+    isReminding: boolean;
   }>;
   total_pages: number;
   total_results: number;
 }
 
 interface MediaStoreState {
-  upcomingMedia: AppMedia[];
-  featuredMedia: AppMedia | null;
+  upcomingMedia: Media[];
+  featuredMedia: Media | null;
   reminders: number[];
   loading: boolean;
   error: string | null;
+  currentPage: number;
+  totalPages: number;
 }
 
+interface UpcomingMediaItem {
+  id: number;
+  title: string;
+  overview: string;
+  backdrop: string;
+  poster: string;
+  release_date: string;
+  vote_average: number;
+  vote_count: number;
+  isReminding: boolean;
+}
 
-
+interface UpcomingMediaApiResponse {
+  dates: {
+    maximum: string;
+    minimum: string;
+  };
+  page: number;
+  results: UpcomingMediaItem[];
+  total_pages: number;
+  total_results: number;
+}
 
 export const useMediaStore = defineStore('media', {
   state: (): MediaStoreState => ({
@@ -57,7 +66,11 @@ export const useMediaStore = defineStore('media', {
     reminders: [],
     loading: false,
     error: null,
+    currentPage: 1, // começa na página 1
+    totalPages: 1,
   }),
+
+
 
   actions: {
     initReminders(): void {
@@ -67,37 +80,35 @@ export const useMediaStore = defineStore('media', {
       }
     },
 
-    async fetchUpcomingMedia(): Promise<void> {
-      const toast = useToast()
+    mapApiResponse(results: UpcomingMediaApiResponse['results']): Media[] {
+      return results.map((item) => ({
+        id: String(item.id),
+        title: item.title,
+        overview: item.overview,
+        backdrop: item.backdrop,
+        poster: item.poster,
+        releaseDate: item.release_date,
+        mediaType: 'movie',
+        isReminding: item.isReminding
+      }));
+    },
 
+    async fetchUpcomingMedia(): Promise<void> {
+      const toast = useToast();
       this.loading = true;
       this.error = null;
+
       try {
-        const response = await api.get<UpcomingMediaApiResponse>('/movies/upcoming');
-
-        const { data } = await api.get('/reminders');
-        const reminderIds = new Set(data.map((item: any) => String(item.movieId)));
-        this.upcomingMedia = response.data.results.map((item) => {
-          const itemId = String(item.id); 
-          const isReminding = reminderIds.has(itemId);
-
-          return {
-            id: itemId,
-            title: item.title,
-            overview: item.overview,
-            backdrop_path: item.backdrop_path,
-            poster_path: item.poster_path,
-            backdrop: item.backdrop_path ? `https://image.tmdb.org/t/p/w780${item.backdrop_path}` : '',
-            poster: item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : '',
-            releaseDate: item.release_date,
-            mediaType: 'movie',
-            isReminding,
-          };
+        const response = await api.get<UpcomingMediaApiResponse>('/movies/upcoming', {
+          params: { page: 1 }
         });
 
+        const mappedMedia = this.mapApiResponse(response.data.results);
+        this.upcomingMedia = mappedMedia;
+        this.featuredMedia = mappedMedia.length > 0 ? mappedMedia[0] : null;
+        this.currentPage = response.data.page;
+        this.totalPages = response.data.total_pages;
 
-        console.log("up meedia message", JSON.stringify(this.upcomingMedia[0]));
-        this.featuredMedia = this.upcomingMedia[0] || null;
       } catch (error) {
         toast.error('Erro ao buscar mídias futuras');
         this.handleAxiosError(error, 'Erro ao buscar mídias futuras.');
@@ -105,6 +116,38 @@ export const useMediaStore = defineStore('media', {
         this.loading = false;
       }
     },
+
+    async fetchMoreUpcomingMedia(): Promise<void> {
+      console.log("fetchMoreUpcomingMedia called, currentPage:", this.currentPage, "totalPages:", this.totalPages, "loading:", this.loading);
+      if (this.currentPage >= this.totalPages || this.loading) {
+        console.log("Cannot load more - check currentPage, totalPages or loading");
+        return;
+      }
+
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const nextPage = this.currentPage + 1;
+        console.log("Fetching page", nextPage);
+
+        const response = await api.get<UpcomingMediaApiResponse>('/movies/upcoming', {
+          params: { page: nextPage }
+        });
+
+        const mappedMedia = this.mapApiResponse(response.data.results);
+        this.upcomingMedia = [...this.upcomingMedia, ...mappedMedia];
+        this.currentPage = response.data.page; 
+        this.totalPages = response.data.total_pages;
+
+        console.log("Page loaded:", response.data.page, "Total pages:", response.data.total_pages);
+      } catch (error) {
+        this.handleAxiosError(error, 'Erro ao buscar mais mídias futuras.');
+      } finally {
+        this.loading = false;
+      }
+    },
+
 
     async fetchReminders(): Promise<void> {
       this.loading = true;
