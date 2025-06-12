@@ -17,7 +17,7 @@ interface UpcomingMediaApiResponse {
     overview: string;
     backdrop: string;
     poster: string;
-    release_date: string;
+    releaseDate: Date;
     vote_average: number;
     vote_count: number;
     isReminding: boolean;
@@ -42,7 +42,7 @@ interface UpcomingMediaItem {
   overview: string;
   backdrop: string;
   poster: string;
-  release_date: string;
+  releaseDate: Date;
   vote_average: number;
   vote_count: number;
   isReminding: boolean;
@@ -66,7 +66,7 @@ export const useMediaStore = defineStore('media', {
     reminders: [],
     loading: false,
     error: null,
-    currentPage: 1, // começa na página 1
+    currentPage: 1,
     totalPages: 1,
   }),
 
@@ -87,7 +87,7 @@ export const useMediaStore = defineStore('media', {
         overview: item.overview,
         backdrop: item.backdrop,
         poster: item.poster,
-        releaseDate: item.release_date,
+        releaseDate: item.releaseDate,
         mediaType: 'movie',
         isReminding: item.isReminding
       }));
@@ -118,9 +118,7 @@ export const useMediaStore = defineStore('media', {
     },
 
     async fetchMoreUpcomingMedia(): Promise<void> {
-      console.log("fetchMoreUpcomingMedia called, currentPage:", this.currentPage, "totalPages:", this.totalPages, "loading:", this.loading);
       if (this.currentPage >= this.totalPages || this.loading) {
-        console.log("Cannot load more - check currentPage, totalPages or loading");
         return;
       }
 
@@ -129,15 +127,13 @@ export const useMediaStore = defineStore('media', {
 
       try {
         const nextPage = this.currentPage + 1;
-        console.log("Fetching page", nextPage);
-
         const response = await api.get<UpcomingMediaApiResponse>('/movies/upcoming', {
           params: { page: nextPage }
         });
 
         const mappedMedia = this.mapApiResponse(response.data.results);
         this.upcomingMedia = [...this.upcomingMedia, ...mappedMedia];
-        this.currentPage = response.data.page; 
+        this.currentPage = response.data.page;
         this.totalPages = response.data.total_pages;
 
         console.log("Page loaded:", response.data.page, "Total pages:", response.data.total_pages);
@@ -148,6 +144,15 @@ export const useMediaStore = defineStore('media', {
       }
     },
 
+
+    updateIsReminding(mediaId: number, isReminding: boolean) {
+      this.upcomingMedia = this.upcomingMedia.map(media => {
+        if (parseInt(media.id) === mediaId) {
+          return { ...media, isReminding }
+        }
+        return media
+      })
+    },
 
     async fetchReminders(): Promise<void> {
       this.loading = true;

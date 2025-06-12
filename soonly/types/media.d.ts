@@ -4,7 +4,7 @@ export interface Media {
   overview: string;
   backdrop: string;
   poster: string;
-  releaseDate: string;
+  releaseDate: Date;
   mediaType: 'movie' | 'tv';
   isReminding: boolean;
 }

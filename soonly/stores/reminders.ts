@@ -47,7 +47,8 @@ export const useReminderStore = defineStore('reminder', {
                 }
                 toast.success('Lembrete removido com sucesso!')
 
-                this.reminders = this.reminders.filter(r => r.movieId !== movieId || r.userId !== userId)
+                await this.fetchReminders()
+
             } catch (err) {
                 console.error('Erro ao remover lembrete:', err)
             }

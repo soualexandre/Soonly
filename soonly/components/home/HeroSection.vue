@@ -19,6 +19,9 @@ const reminderError = ref<string | null>(null);
 const showConfirmModal = ref(false);
 
 function handleReminderClick() {
+   if (featuredMedia.value?.isReminding) {
+    return; 
+  }
   if (!isAuthenticated.value) {
     window.location.href = '/login';
   } else if (featuredMedia.value) {
@@ -36,14 +39,15 @@ function onCancelReminder() {
 }
 
 const formattedReleaseDate = computed(() => {
-  const date = new Date();
-  return date.toLocaleDateString('pt-BR', {
+  if (!featuredMedia.value?.releaseDate) return 'Data não informada';
+
+  const date = new Date(featuredMedia.value.releaseDate);
+  return new Intl.DateTimeFormat('pt-BR', {
     day: '2-digit',
     month: 'long',
-    year: 'numeric'
-  });
+    year: 'numeric',
+  }).format(date);
 });
-
 async function createReminder() {
   if (!featuredMedia.value) return;
 
